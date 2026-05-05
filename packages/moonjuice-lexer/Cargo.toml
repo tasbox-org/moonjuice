@@ -7,4 +7,5 @@ edition = "2024"
 moonjuice-common = { path = "../moonjuice-common", version = "0.1.0" }
 
 [dev-dependencies]
-assertor = { version = "*" }
+assertor = "*"
+indoc = "2"

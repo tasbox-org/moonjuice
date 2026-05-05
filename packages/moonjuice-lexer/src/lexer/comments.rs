@@ -44,6 +44,7 @@ impl Lexer {
 mod tests {
   use super::*;
   use assertor::*;
+  use indoc::indoc;
   use moonjuice_common::Position;
 
   #[test]
@@ -58,6 +59,30 @@ mod tests {
       lexeme: "-- this is a comment".to_string(),
       start: Position { line: 1, column: 1 },
       end: Position { line: 1, column: 21 },
+    }]);
+  }
+
+  #[test]
+  fn should_parse_multiline_comment() {
+    let result = Lexer::tokenise(
+      indoc! {"
+      --[[
+        This is a multi-line
+        comment.
+      --]]
+    "}
+      .chars()
+      .collect(),
+    );
+
+    assert!(result.is_ok());
+
+    let tokens = result.unwrap();
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Comment("\n  This is a multi-line\n  comment.\n".to_string()),
+      lexeme: "--[[\n  This is a multi-line\n  comment.\n--]]".to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position { line: 4, column: 5 },
     }]);
   }
 }
