@@ -2,8 +2,8 @@ pub mod peekable_stream;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Position {
-  pub line: i32,
-  pub column: i32,
+  pub line: usize,
+  pub column: usize,
 }
 
 #[derive(Debug, Clone, PartialEq)]

@@ -10,3 +10,4 @@ phf = { version = "0.13.1", features = ["macros"] }
 [dev-dependencies]
 assertor = "*"
 indoc = "2"
+parameterized = "2.1.0"

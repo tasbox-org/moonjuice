@@ -62,3 +62,29 @@ impl Lexer {
     Ok(Some(self.new_token(token_value)))
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use assertor::*;
+  use moonjuice_common::Position;
+  use parameterized::parameterized;
+
+  #[parameterized(symbol = { "_symbol", "symbol", "Symbol", "symbol1", "sym_bol", "SymBol", "SYM_BOL" })]
+  fn should_parse_symbol(symbol: &str) {
+    let result = Lexer::tokenise(symbol.chars().collect());
+
+    assert!(result.is_ok());
+
+    let tokens = result.unwrap();
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Symbol(symbol.to_string()),
+      lexeme: symbol.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: symbol.len() + 1,
+      },
+    }]);
+  }
+}
