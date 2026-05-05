@@ -1,11 +1,17 @@
-use moonjuice_common::Position;
+use moonjuice_common::{Keyword, Operator, Position, SpecialCharacter};
 
 pub enum TokenValue {
   Eof,
   Nil,
-  Symbol(String),
-  Comment(String),
+  Bool(bool),
+  Int(i64),
+  Double(f64),
   String(String),
+  Symbol(String),
+  Keyword(Keyword),
+  Operator(Operator),
+  SpecialCharacter(SpecialCharacter),
+  Comment(String),
 }
 
 pub struct Token {
