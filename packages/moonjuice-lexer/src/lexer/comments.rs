@@ -27,7 +27,7 @@ impl Lexer {
 
       (self.token_start_index + 4, self.source.get_index() - 4)
     } else {
-      while !self.source.is_match("\n".chars()) {
+      while !self.source.is_match("\n".chars()) && self.source.has_next() {
         self.advance()
       }
 

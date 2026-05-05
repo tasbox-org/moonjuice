@@ -47,7 +47,7 @@ impl<T: std::cmp::PartialEq> PeekableStream<T> {
   }
 
   pub fn has_next(&self) -> bool {
-    self.index <= self.collection.len()
+    self.index < self.collection.len()
   }
 
   pub fn has_remaining(&self, count: usize) -> bool {
