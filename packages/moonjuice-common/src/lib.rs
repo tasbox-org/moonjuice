@@ -6,7 +6,7 @@ pub struct Position {
   pub column: i32,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Keyword {
   Break,
   Continue,
@@ -30,7 +30,7 @@ pub enum Keyword {
   Export,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Operator {
   Add,
   Subtract,
@@ -65,7 +65,7 @@ pub enum Operator {
   RightShift,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SpecialCharacter {
   OpenBracket,
   CloseBracket,

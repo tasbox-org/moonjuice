@@ -1,10 +1,12 @@
 use crate::error::Error;
+use crate::error::Error::UnexpectedCharacter;
 use crate::token::{Token, TokenValue};
 use moonjuice_common::Position;
 use moonjuice_common::peekable_stream::PeekableStream;
 use std::ops::Range;
 
 mod comments;
+mod symbols;
 
 pub struct Lexer {
   source: PeekableStream<char>,
@@ -51,16 +53,26 @@ impl Lexer {
     self.token_start_index = self.source.get_index();
     self.token_start_position = self.position.clone();
 
-    self.tokenise_comment()
+    let token = self.tokenise_comment()?.or(self.tokenise_symbol()?);
+
+    if token.is_none() {
+      Err(UnexpectedCharacter(self.source.peek_next().cloned().unwrap_or('\0')))
+    } else {
+      Ok(token)
+    }
   }
 
   fn new_token(&self, value: TokenValue) -> Token {
     Token {
       value,
-      lexeme: self.read_string(self.token_start_index..self.source.get_index()),
+      lexeme: self.read_lexeme(),
       start: self.token_start_position.clone(),
       end: self.position.clone(),
     }
+  }
+
+  fn read_lexeme(&self) -> String {
+    self.read_string(self.token_start_index..self.source.get_index())
   }
 
   fn read_string(&self, range: Range<usize>) -> String {

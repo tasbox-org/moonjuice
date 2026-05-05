@@ -1,8 +1,7 @@
 use moonjuice_common::{Keyword, Operator, Position, SpecialCharacter};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum TokenValue {
-  Eof,
   Nil,
   Bool(bool),
   Int(i64),
