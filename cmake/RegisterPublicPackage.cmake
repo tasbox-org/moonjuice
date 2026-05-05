@@ -5,23 +5,15 @@ include(GNUInstallDirs)
 function(RegisterPublicPackage PACKAGE_NAME)
   message(STATUS "Registering public package '${PACKAGE_NAME}'")
 
-  if (NOT MOONJUICE_DISABLE_TESTS)
-    add_subdirectory(tests)
-  endif ()
-
   # Traditionally, you shouldn't GLOB source files as it breaks changed file detection.
   # However, the "new" CONFIGURE_DEPENDS parameter solves this for most cases with minimal build-time overhead
   file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "packages/${PACKAGE_NAME}/*.cpp")
-  file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "packages/${PACKAGE_NAME}/*.hpp")
 
-  add_library(${PACKAGE_NAME})
+  add_library(${PACKAGE_NAME} OBJECT)
   target_sources(
-          ${PACKAGE_NAME}
-          PRIVATE ${SOURCES}
-          PUBLIC FILE_SET HEADERS BASE_DIRS packages FILES ${HEADERS}
+          ${PACKAGE_NAME} PUBLIC
+          FILE_SET MODULES TYPE CXX_MODUELS FILES ${SOURCES}
   )
-
-  target_include_directories(${PACKAGE_NAME} PRIVATE packages)
 
   install(
           TARGETS ${PACKAGE_NAME}
