@@ -1,5 +1,2 @@
-build
+target
 .idea/discord.xml
-vcpkg_installed
-
-.vs/*
