@@ -1,9 +1,12 @@
-#[derive(Debug, Clone)]
+pub mod peekable_stream;
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct Position {
   pub line: i32,
   pub column: i32,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Keyword {
   Break,
   Continue,
@@ -27,6 +30,7 @@ pub enum Keyword {
   Export,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Operator {
   Add,
   Subtract,
@@ -61,6 +65,7 @@ pub enum Operator {
   RightShift,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum SpecialCharacter {
   OpenBracket,
   CloseBracket,

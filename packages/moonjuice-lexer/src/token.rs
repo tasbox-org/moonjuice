@@ -1,5 +1,6 @@
 use moonjuice_common::{Keyword, Operator, Position, SpecialCharacter};
 
+#[derive(PartialEq, Debug)]
 pub enum TokenValue {
   Eof,
   Nil,
@@ -14,6 +15,7 @@ pub enum TokenValue {
   Comment(String),
 }
 
+#[derive(PartialEq, Debug)]
 pub struct Token {
   pub value: TokenValue,
   pub lexeme: String,
