@@ -1,0 +1,5 @@
+build
+.idea/discord.xml
+vcpkg_installed
+
+.vs/*
