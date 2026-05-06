@@ -181,6 +181,18 @@ mod tests {
     }]);
   }
 
+  #[test]
+  fn should_parse_inline_unicode() {
+    let tokens = Lexer::tokenise("'ඞ'".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: TokenValue::String(Whole, "ඞ".to_string()),
+      lexeme: "'ඞ'".to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position { line: 1, column: 4 },
+    }]);
+  }
+
   #[rstest]
   #[case("'")]
   #[case("\"")]
