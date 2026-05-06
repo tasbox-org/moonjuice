@@ -8,79 +8,75 @@ impl Lexer {
     let char = self.source.peek_next()?;
 
     let (operator, advance_by) = match char {
-      '+' => (Some(Add), 1),
-      '-' => (Some(Subtract), 1),
-      '*' => (Some(Multiply), 1),
-      '/' => (Some(Divide), 1),
-      '%' => (Some(Modulo), 1),
+      '+' => Some((Add, 1)),
+      '-' => Some((Subtract, 1)),
+      '*' => Some((Multiply, 1)),
+      '/' => Some((Divide, 1)),
+      '%' => Some((Modulo, 1)),
       '=' => {
         if self.source.is_match("==".chars()) {
-          (Some(Equals), 2)
+          Some((Equals, 2))
         } else {
-          (Some(Assignment), 1)
+          Some((Assignment, 1))
         }
       }
       '~' => {
         if self.source.is_match("~=".chars()) {
-          (Some(NotEquals), 2)
+          Some((NotEquals, 2))
         } else {
-          (Some(BitwiseNot), 1)
+          Some((BitwiseNot, 1))
         }
       }
       '<' => {
         if self.source.is_match("<<".chars()) {
-          (Some(LeftShift), 2)
+          Some((LeftShift, 2))
         } else if self.source.is_match("<=".chars()) {
-          (Some(LessThanOrEqual), 2)
+          Some((LessThanOrEqual, 2))
         } else {
-          (Some(LessThan), 1)
+          Some((LessThan, 1))
         }
       }
       '>' => {
         if self.source.is_match(">>".chars()) {
-          (Some(RightShift), 2)
+          Some((RightShift, 2))
         } else if self.source.is_match(">=".chars()) {
-          (Some(GreaterThanOrEqual), 2)
+          Some((GreaterThanOrEqual, 2))
         } else {
-          (Some(GreaterThan), 1)
+          Some((GreaterThan, 1))
         }
       }
       '|' => {
         if self.source.is_match("|>".chars()) {
-          (Some(Pipe), 2)
+          Some((Pipe, 2))
         } else {
-          (Some(BitwiseOr), 1)
+          Some((BitwiseOr, 1))
         }
       }
       '.' => {
         if self.source.is_match("..".chars()) {
-          (Some(Concat), 2)
+          Some((Concat, 2))
         } else {
-          (Some(Index), 1)
+          Some((Index, 1))
         }
       }
-      '&' => (Some(BitwiseAnd), 1),
-      '^' => (Some(BitwiseXor), 1),
-      '#' => (Some(Length), 1),
+      '&' => Some((BitwiseAnd, 1)),
+      '^' => Some((BitwiseXor, 1)),
+      '#' => Some((Length, 1)),
       '?' => {
         if self.source.is_match("??".chars()) {
-          (Some(OptionalCoalesce), 2)
+          Some((OptionalCoalesce, 2))
         } else if self.source.is_match("?.".chars()) {
-          (Some(OptionalIndex), 2)
+          Some((OptionalIndex, 2))
         } else {
-          (None, 0)
+          None
         }
       }
-      _ => (None, 0),
-    };
+      _ => None,
+    }?;
 
-    if let Some(operator) = operator {
-      self.advance_by(advance_by);
+    self.advance_by(advance_by);
 
-      Some(self.new_token(TokenValue::Operator(operator)))
-    } else {
-      None
-    }
+    Some(self.new_token(TokenValue::Operator(operator)))
   }
 }
 
