@@ -1,3 +1,4 @@
+use crate::StringTokenType::Whole;
 use crate::TokenValue::MalformedString;
 use crate::lexer::Lexer;
 use crate::{Token, TokenValue};
@@ -33,16 +34,17 @@ impl Lexer {
     }
 
     if !self.source.is_match(delimiter.chars()) {
-      Some(vec![
-        self.new_token(MalformedString(format!("Missing closing {}", delimiter))),
-      ])
+      Some(vec![self.new_token(MalformedString(
+        Whole,
+        format!("Missing closing {}", delimiter),
+      ))])
     } else if contains_invalid_escapes {
       Some(vec![
-        self.new_token(MalformedString("Invalid escape sequence".to_string())),
+        self.new_token(MalformedString(Whole, "Invalid escape sequence".to_string())),
       ])
     } else {
       self.advance_by(delimiter.len());
-      Some(vec![self.new_token(TokenValue::String(string))])
+      Some(vec![self.new_token(TokenValue::String(Whole, string))])
     }
   }
 
@@ -101,8 +103,8 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::StringTokenType::{End, Middle, Start};
   use crate::Token;
-  use crate::TokenValue::{FormatStringEnd, FormatStringMiddle, FormatStringStart};
   use assertor::*;
   use indoc::indoc;
   use moonjuice_common::Position;
@@ -121,7 +123,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String(string.to_string()),
+      value: TokenValue::String(Whole, string.to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
@@ -153,7 +155,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("\nmulti-line string\nunindented\n".to_string()),
+      value: TokenValue::String(Whole, "\nmulti-line string\nunindented\n".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
@@ -181,7 +183,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("\nunindented\n  indented\n".to_string()),
+      value: TokenValue::String(Whole, "\nunindented\n  indented\n".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position { line: 4, column: 2 },
@@ -204,7 +206,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String(value.to_string()),
+      value: TokenValue::String(Whole, value.to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
@@ -220,7 +222,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("".to_string()),
+      value: TokenValue::String(Whole, "".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position { line: 2, column: 2 },
@@ -234,7 +236,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("".to_string()),
+      value: TokenValue::String(Whole, "".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
@@ -250,19 +252,19 @@ mod tests {
 
     assert_that!(tokens).contains_exactly_in_order(vec![
       Token {
-        value: FormatStringStart("start".to_string()),
+        value: TokenValue::String(Start, "start".to_string()),
         lexeme: "'start".to_string(),
         start: Position { line: 1, column: 1 },
         end: Position { line: 1, column: 7 },
       },
       Token {
-        value: FormatStringMiddle("middle".to_string()),
+        value: TokenValue::String(Middle, "middle".to_string()),
         lexeme: "middle".to_string(),
         start: Position { line: 1, column: 9 },
         end: Position { line: 1, column: 14 },
       },
       Token {
-        value: FormatStringEnd("end".to_string()),
+        value: TokenValue::String(End, "end".to_string()),
         lexeme: "end'".to_string(),
         start: Position { line: 1, column: 16 },
         end: Position { line: 1, column: 21 },
@@ -276,13 +278,13 @@ mod tests {
 
     assert_that!(tokens).contains_exactly_in_order(vec![
       Token {
-        value: FormatStringStart("".to_string()),
+        value: TokenValue::String(Start, "".to_string()),
         lexeme: "'".to_string(),
         start: Position { line: 1, column: 1 },
         end: Position { line: 1, column: 2 },
       },
       Token {
-        value: FormatStringEnd("end".to_string()),
+        value: TokenValue::String(End, "end".to_string()),
         lexeme: "'".to_string(),
         start: Position { line: 1, column: 4 },
         end: Position { line: 1, column: 5 },
@@ -298,7 +300,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: MalformedString(format!("Missing closing {}", delimiter).to_string()),
+      value: MalformedString(Whole, format!("Missing closing {}", delimiter).to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {

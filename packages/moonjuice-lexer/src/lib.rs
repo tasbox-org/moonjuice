@@ -35,15 +35,20 @@ pub enum Operator {
 }
 
 #[derive(PartialEq, Debug, Clone)]
+pub enum StringTokenType {
+  Whole,
+  Start,
+  Middle,
+  End,
+}
+
+#[derive(PartialEq, Debug, Clone)]
 pub enum TokenValue {
   Nil,
   Bool(bool),
   Int(i64),
   Double(f64),
-  String(String),
-  FormatStringStart(String),
-  FormatStringMiddle(String),
-  FormatStringEnd(String),
+  String(StringTokenType, String),
   Symbol(String),
   Keyword(Keyword),
   Operator(Operator),
@@ -52,7 +57,7 @@ pub enum TokenValue {
 
   UnexpectedCharacter(char),
   MalformedNumber(String),
-  MalformedString(String),
+  MalformedString(StringTokenType, String),
 }
 
 #[derive(PartialEq, Debug)]
