@@ -36,7 +36,8 @@ impl Lexer {
     let token = self
       .tokenise_comment()
       .or(self.tokenise_numeral())
-      .or(self.tokenise_symbol());
+      .or(self.tokenise_symbol())
+      .or(self.tokenise_operator());
 
     if token.is_none() {
       let character = self.source.peek_next().cloned().unwrap_or('\0');
