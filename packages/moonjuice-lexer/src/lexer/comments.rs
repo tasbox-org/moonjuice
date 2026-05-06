@@ -1,5 +1,4 @@
 use crate::error::Error;
-use crate::error::Error::UnterminatedMultilineComment;
 use crate::lexer::Lexer;
 use crate::token::Token;
 use crate::token::TokenValue::Comment;
@@ -15,17 +14,17 @@ impl Lexer {
     let (comment_start, comment_end) = if self.source.is_match("[[".chars()) {
       self.advance_by(2);
 
-      while !self.source.is_match("--]]".chars()) {
-        if !self.source.has_remaining(5) {
-          return Err(UnterminatedMultilineComment);
-        }
-
+      while !self.source.is_match("--]]".chars()) && self.source.has_next() {
         self.advance();
       }
 
-      self.advance_by(4);
+      if self.source.is_match("--]]".chars()) {
+        self.advance_by(4);
 
-      (self.token_start_index + 4, self.source.get_index() - 4)
+        (self.token_start_index + 4, self.source.get_index() - 4)
+      } else {
+        (self.token_start_index + 4, self.source.get_index())
+      }
     } else {
       while !self.source.is_match("\n".chars()) && self.source.has_next() {
         self.advance()
@@ -83,6 +82,29 @@ mod tests {
       lexeme: "--[[\n  This is a multi-line\n  comment.\n--]]".to_string(),
       start: Position { line: 1, column: 1 },
       end: Position { line: 4, column: 5 },
+    }]);
+  }
+
+  #[test]
+  fn should_parse_multiline_comment_when_overruning() {
+    let result = Lexer::tokenise(
+      indoc! {"
+      --[[
+        This is a multi-line
+        comment.
+    "}
+      .chars()
+      .collect(),
+    );
+
+    assert!(result.is_ok());
+
+    let tokens = result.unwrap();
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Comment("\n  This is a multi-line\n  comment.\n".to_string()),
+      lexeme: "--[[\n  This is a multi-line\n  comment.\n".to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position { line: 4, column: 1 },
     }]);
   }
 }
