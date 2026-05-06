@@ -5,6 +5,7 @@ use moonjuice_common::peekable_stream::PeekableStream;
 use std::ops::Range;
 
 mod comments;
+mod numerals;
 mod symbols;
 
 pub struct Lexer {
@@ -52,7 +53,10 @@ impl Lexer {
     self.token_start_index = self.source.get_index();
     self.token_start_position = self.position.clone();
 
-    let token = self.tokenise_comment().or(self.tokenise_symbol());
+    let token = self
+      .tokenise_comment()
+      .or(self.tokenise_numeral())
+      .or(self.tokenise_symbol());
 
     if token.is_none() {
       let character = self.source.peek_next().cloned().unwrap_or('\0');
