@@ -73,6 +73,7 @@ impl Lexer {
       Some('\\') => Some(("\\".to_string(), 1)),
       Some('0') => Some(("\0".to_string(), 1)),
       Some('{') => Some(("{".to_string(), 1)),
+      Some('\n') => Some(("".to_string(), 1)),
       Some('x') => {
         if let Some(first) = self.source.peek(1)
           && let Some(second) = self.source.peek(2)
@@ -195,6 +196,36 @@ mod tests {
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: TokenValue::String(value.to_string()),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[test]
+  fn should_parse_escaped_newline() {
+    let lexeme = "'\\\n'";
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: TokenValue::String("".to_string()),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position { line: 2, column: 2 },
+    }]);
+  }
+
+  #[rstest]
+  #[case("\"\"")]
+  #[case("''")]
+  fn should_parse_empty_string(#[case] lexeme: &str) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: TokenValue::String("".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
