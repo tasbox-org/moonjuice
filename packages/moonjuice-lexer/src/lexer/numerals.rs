@@ -105,8 +105,9 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::Operator::Concat;
   use crate::Token;
-  use crate::TokenValue::{Double, MalformedNumber};
+  use crate::TokenValue::{Double, MalformedNumber, Operator};
   use assertor::*;
   use moonjuice_common::Position;
   use parameterized::parameterized;
@@ -229,6 +230,12 @@ mod tests {
         lexeme: "1".to_string(),
         start: Position { line: 1, column: 1 },
         end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: Operator(Concat),
+        lexeme: "..".to_string(),
+        start: Position { line: 1, column: 2 },
+        end: Position { line: 1, column: 4 },
       },
       Token {
         value: Int(2),

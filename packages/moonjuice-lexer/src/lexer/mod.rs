@@ -38,11 +38,11 @@ impl Lexer {
     let tokens = self
       .tokenise_comment()
       .map(|token| vec![token])
-      .or(self.tokenise_numeral().map(|token| vec![token]))
-      .or(self.tokenise_symbol().map(|token| vec![token]))
-      .or(self.tokenise_operator().map(|token| vec![token]))
-      .or(self.tokenise_string())
-      .or(self.tokenise_special_character().map(|token| vec![token]));
+      .or_else(|| self.tokenise_numeral().map(|token| vec![token]))
+      .or_else(|| self.tokenise_symbol().map(|token| vec![token]))
+      .or_else(|| self.tokenise_operator().map(|token| vec![token]))
+      .or_else(|| self.tokenise_string())
+      .or_else(|| self.tokenise_special_character().map(|token| vec![token]));
 
     let tokens = if let Some(tokens) = tokens {
       tokens
