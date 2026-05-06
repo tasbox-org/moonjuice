@@ -91,7 +91,7 @@ impl Lexer {
     if char == Some('\n') {
       self.position.line += 1;
       self.position.column = 1;
-    } else {
+    } else if char.is_some() {
       self.position.column += 1;
     }
   }
