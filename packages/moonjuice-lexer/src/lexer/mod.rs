@@ -7,6 +7,7 @@ use std::ops::Range;
 mod comments;
 mod numerals;
 mod operators;
+mod special_characters;
 mod strings;
 mod symbols;
 
@@ -40,7 +41,8 @@ impl Lexer {
       .or(self.tokenise_numeral().map(|token| vec![token]))
       .or(self.tokenise_symbol().map(|token| vec![token]))
       .or(self.tokenise_operator().map(|token| vec![token]))
-      .or(self.tokenise_string());
+      .or(self.tokenise_string())
+      .or(self.tokenise_special_character().map(|token| vec![token]));
 
     if let Some(tokens) = tokens {
       tokens
