@@ -136,6 +136,7 @@ mod tests {
   #[case("\\0", "\0")]
   #[case("\\x41", "\x41")]
   #[case("\\u{263A}", "☺")]
+  #[case("\\{}", "{}")]
   fn should_parse_escape_sequences(#[case] sequence: &str, #[case] value: &str) {
     let lexeme = format!("'{}'", sequence,);
     let tokens = Lexer::tokenise(lexeme.chars().collect());
