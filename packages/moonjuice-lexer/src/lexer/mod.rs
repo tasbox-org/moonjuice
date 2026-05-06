@@ -1,5 +1,4 @@
-use crate::error::Error;
-use crate::error::Error::UnexpectedCharacter;
+use crate::token::TokenValue::UnexpectedCharacter;
 use crate::token::{Token, TokenValue};
 use moonjuice_common::Position;
 use moonjuice_common::peekable_stream::PeekableStream;
@@ -17,17 +16,17 @@ pub struct Lexer {
 }
 
 impl Lexer {
-  pub fn tokenise(source: Vec<char>) -> Result<Vec<Token>, Error> {
+  pub fn tokenise(source: Vec<char>) -> Vec<Token> {
     let mut lexer = Lexer::new(source);
     let mut tokens = vec![];
 
     while lexer.source.has_next() {
-      if let Some(token) = lexer.tokenise_next()? {
+      if let Some(token) = lexer.tokenise_next() {
         tokens.push(token);
       }
     }
 
-    Ok(tokens)
+    tokens
   }
 
   fn new(source: Vec<char>) -> Self {
@@ -39,7 +38,7 @@ impl Lexer {
     }
   }
 
-  fn tokenise_next(&mut self) -> Result<Option<Token>, Error> {
+  fn tokenise_next(&mut self) -> Option<Token> {
     while let Some(char) = self.source.peek_next()
       && char.is_whitespace()
     {
@@ -47,18 +46,19 @@ impl Lexer {
     }
 
     if !self.source.has_next() {
-      return Ok(None);
+      return None;
     }
 
     self.token_start_index = self.source.get_index();
     self.token_start_position = self.position.clone();
 
-    let token = self.tokenise_comment()?.or(self.tokenise_symbol()?);
+    let token = self.tokenise_comment().or(self.tokenise_symbol());
 
     if token.is_none() {
-      Err(UnexpectedCharacter(self.source.peek_next().cloned().unwrap_or('\0')))
+      self.advance();
+      Some(self.new_token(UnexpectedCharacter(self.source.peek_next().cloned().unwrap_or('\0'))))
     } else {
-      Ok(token)
+      token
     }
   }
 

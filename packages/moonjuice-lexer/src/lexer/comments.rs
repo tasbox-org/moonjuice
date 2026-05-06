@@ -1,12 +1,11 @@
-use crate::error::Error;
 use crate::lexer::Lexer;
 use crate::token::Token;
 use crate::token::TokenValue::Comment;
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_comment(&mut self) -> Result<Option<Token>, Error> {
+  pub(in crate::lexer) fn tokenise_comment(&mut self) -> Option<Token> {
     if !self.source.is_match("--".chars()) {
-      return Ok(None);
+      return None;
     }
 
     self.advance_by(2);
@@ -33,9 +32,7 @@ impl Lexer {
       (self.token_start_index + 2, self.source.get_index())
     };
 
-    Ok(Some(
-      self.new_token(Comment(self.read_string(comment_start..comment_end))),
-    ))
+    Some(self.new_token(Comment(self.read_string(comment_start..comment_end))))
   }
 }
 
@@ -48,11 +45,8 @@ mod tests {
 
   #[test]
   fn should_parse_single_line_comment() {
-    let result = Lexer::tokenise("-- this is a comment".chars().collect());
+    let tokens = Lexer::tokenise("-- this is a comment".chars().collect());
 
-    assert!(result.is_ok());
-
-    let tokens = result.unwrap();
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: Comment(" this is a comment".to_string()),
       lexeme: "-- this is a comment".to_string(),
@@ -63,7 +57,7 @@ mod tests {
 
   #[test]
   fn should_parse_multiline_comment() {
-    let result = Lexer::tokenise(
+    let tokens = Lexer::tokenise(
       indoc! {"
       --[[
         This is a multi-line
@@ -74,9 +68,6 @@ mod tests {
       .collect(),
     );
 
-    assert!(result.is_ok());
-
-    let tokens = result.unwrap();
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: Comment("\n  This is a multi-line\n  comment.\n".to_string()),
       lexeme: "--[[\n  This is a multi-line\n  comment.\n--]]".to_string(),
@@ -86,8 +77,8 @@ mod tests {
   }
 
   #[test]
-  fn should_parse_multiline_comment_when_overruning() {
-    let result = Lexer::tokenise(
+  fn should_parse_multiline_comment_when_overrunning() {
+    let tokens = Lexer::tokenise(
       indoc! {"
       --[[
         This is a multi-line
@@ -97,9 +88,6 @@ mod tests {
       .collect(),
     );
 
-    assert!(result.is_ok());
-
-    let tokens = result.unwrap();
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: Comment("\n  This is a multi-line\n  comment.\n".to_string()),
       lexeme: "--[[\n  This is a multi-line\n  comment.\n".to_string(),

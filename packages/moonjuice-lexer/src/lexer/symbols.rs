@@ -1,4 +1,3 @@
-use crate::error::Error;
 use crate::lexer::Lexer;
 use crate::token::TokenValue::*;
 use crate::token::{Token, TokenValue};
@@ -39,13 +38,13 @@ static SPECIAL_SYMBOLS: phf::Map<&'static str, TokenValue> = phf_map! {
 };
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_symbol(&mut self) -> Result<Option<Token>, Error> {
+  pub(in crate::lexer) fn tokenise_symbol(&mut self) -> Option<Token> {
     if !self
       .source
       .peek_next()
       .is_some_and(|char| char.is_ascii_alphabetic() || *char == '_')
     {
-      return Ok(None);
+      return None;
     }
 
     while self
@@ -59,7 +58,7 @@ impl Lexer {
     let symbol = self.read_lexeme();
     let token_value = SPECIAL_SYMBOLS.get(symbol.as_str()).cloned().unwrap_or(Symbol(symbol));
 
-    Ok(Some(self.new_token(token_value)))
+    Some(self.new_token(token_value))
   }
 }
 
@@ -72,11 +71,8 @@ mod tests {
 
   #[parameterized(symbol = { "_symbol", "symbol", "Symbol", "symbol1", "sym_bol", "SymBol", "SYM_BOL" })]
   fn should_parse_symbol(symbol: &str) {
-    let result = Lexer::tokenise(symbol.chars().collect());
+    let tokens = Lexer::tokenise(symbol.chars().collect());
 
-    assert!(result.is_ok());
-
-    let tokens = result.unwrap();
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: Symbol(symbol.to_string()),
       lexeme: symbol.to_string(),
