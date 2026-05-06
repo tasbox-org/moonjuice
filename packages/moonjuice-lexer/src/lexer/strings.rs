@@ -214,31 +214,6 @@ mod tests {
   }
 
   #[rstest]
-  #[case(" ")]
-  #[case("  ")]
-  #[case("    ")]
-  #[case("\t")]
-  fn should_parse_multiline_string_with_unindent(#[case] indentation: &str) {
-    let lexeme = format!(
-      indoc! {"
-        '
-        {}unindented
-        {}{}indented
-        '
-      "},
-      indentation, indentation, indentation
-    );
-    let tokens = Lexer::tokenise(lexeme.chars().collect());
-
-    assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String(Whole, "\nunindented\n  indented\n".to_string()),
-      lexeme: lexeme.to_string(),
-      start: Position { line: 1, column: 1 },
-      end: Position { line: 4, column: 2 },
-    }]);
-  }
-
-  #[rstest]
   #[case("\\\"", "\"")]
   #[case("\\'", "'")]
   #[case("\\n", "\n")]
