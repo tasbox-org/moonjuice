@@ -82,9 +82,7 @@ impl Lexer {
     let mut tokens = vec![];
 
     while lexer.source.has_next() {
-      if let Some(next_tokens) = lexer.tokenise_next() {
-        tokens.extend(next_tokens);
-      }
+      tokens.extend(lexer.tokenise_next());
     }
 
     tokens

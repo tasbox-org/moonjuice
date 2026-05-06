@@ -1,7 +1,8 @@
-use crate::StringTokenType::Whole;
-use crate::TokenValue::MalformedString;
+use crate::StringTokenType::{End, Middle, Start, Whole};
+use crate::TokenValue::{MalformedString, SpecialCharacter};
 use crate::lexer::Lexer;
 use crate::{Token, TokenValue};
+use moonjuice_common::SpecialCharacter::CloseCurlyBracket;
 use std::iter;
 use std::string::String;
 
@@ -9,13 +10,57 @@ impl Lexer {
   pub(in crate::lexer) fn tokenise_string(&mut self) -> Option<Vec<Token>> {
     let delimiter = self.consume_string_delimiter()?;
 
-    // let mut tokens = vec![];
+    let mut tokens = vec![];
 
+    while self.source.has_next() {
+      let result = self.tokenise_string_segment(delimiter.clone());
+      let next_is_hole = self.source.peek_next().is_some_and(|char| *char == '{');
+
+      let kind = match (tokens.is_empty(), next_is_hole) {
+        (false, false) => End,
+        (true, false) => Whole,
+        (false, true) => Middle,
+        (true, true) => Start,
+      };
+
+      let token_value = match result {
+        Ok(contents) => TokenValue::String(kind.clone(), contents),
+        Err(message) => MalformedString(kind.clone(), message),
+      };
+
+      if kind == End || kind == Whole {
+        self.advance_by(delimiter.len());
+        tokens.push(self.new_token(token_value));
+
+        break;
+      }
+
+      tokens.push(self.new_token(token_value));
+      self.advance();
+
+      while self.source.has_next() {
+        tokens.extend(self.tokenise_next());
+
+        if tokens
+          .last()
+          .is_some_and(|token| matches!(token.value, SpecialCharacter(CloseCurlyBracket)))
+        {
+          tokens.pop();
+          break;
+        }
+      }
+    }
+
+    Some(tokens)
+  }
+
+  fn tokenise_string_segment(&mut self, delimiter: String) -> Result<String, String> {
     let mut string = "".to_string();
     let mut contains_invalid_escapes = false;
 
     while let Some(char) = self.source.peek_next().cloned()
       && !self.source.is_match(delimiter.chars())
+      && char != '{'
     {
       self.advance();
 
@@ -33,18 +78,12 @@ impl Lexer {
       }
     }
 
-    if !self.source.is_match(delimiter.chars()) {
-      Some(vec![self.new_token(MalformedString(
-        Whole,
-        format!("Missing closing {}", delimiter),
-      ))])
+    if !self.source.has_next() {
+      Err(format!("Missing closing {}", delimiter).to_string())
     } else if contains_invalid_escapes {
-      Some(vec![
-        self.new_token(MalformedString(Whole, "Invalid escape sequence".to_string())),
-      ])
+      Err("Invalid escape sequence".to_string())
     } else {
-      self.advance_by(delimiter.len());
-      Some(vec![self.new_token(TokenValue::String(Whole, string))])
+      Ok(string)
     }
   }
 
@@ -207,6 +246,26 @@ mod tests {
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
       value: TokenValue::String(Whole, value.to_string()),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[rstest]
+  #[case("\\ ")]
+  #[case("\\x80")]
+  #[case("\\xGG")]
+  #[case("\\u{}")]
+  fn should_parse_malformed_escape_sequences(#[case] sequence: &str) {
+    let lexeme = format!("'{}'", sequence,);
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: TokenValue::MalformedString(Whole, "Invalid escape sequence".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
