@@ -55,7 +55,9 @@ impl Lexer {
     self.advance();
     let mut delimiter_length = 1;
 
-    while self.source.peek_next().is_some_and(|char| *char == delimiter_char) {
+    while self.source.peek_next().is_some_and(|char| *char == delimiter_char)
+      && (delimiter_length > 1 || self.source.peek(1).is_some_and(|char| *char == delimiter_char))
+    {
       self.advance();
       delimiter_length += 1;
     }
@@ -109,8 +111,10 @@ mod tests {
   #[rstest]
   #[case("'")]
   #[case("\"")]
-  #[case("''")]
-  #[case("\"\"")]
+  #[case("'''")]
+  #[case("\"\"\"")]
+  #[case("''''")]
+  #[case("\"\"\"\"")]
   fn should_parse_single_line_string(#[case] delimiter: &str) {
     let string = "some string";
     let lexeme = format!("{}{}{}", delimiter, string, delimiter);
@@ -130,8 +134,10 @@ mod tests {
   #[rstest]
   #[case("'")]
   #[case("\"")]
-  #[case("''")]
-  #[case("\"\"")]
+  #[case("'''")]
+  #[case("\"\"\"")]
+  #[case("''''")]
+  #[case("\"\"\"\"")]
   fn should_parse_multiline_string(#[case] delimiter: &str) {
     let lexeme = format!(
       indoc! {"
@@ -147,10 +153,13 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("multi-line string\nunindented".to_string()),
+      value: TokenValue::String("\nmulti-line string\nunindented\n".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
-      end: Position { line: 4, column: 2 },
+      end: Position {
+        line: 4,
+        column: delimiter.len() + 1,
+      },
     }]);
   }
 
@@ -172,7 +181,7 @@ mod tests {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: TokenValue::String("unindented\n  indented".to_string()),
+      value: TokenValue::String("\nunindented\n  indented\n".to_string()),
       lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position { line: 4, column: 2 },
@@ -284,7 +293,7 @@ mod tests {
   #[rstest]
   #[case("'a", "'")]
   #[case("\"b", "\"")]
-  #[case("''mismatched'", "''")]
+  #[case("'''mismatched''", "'''")]
   fn should_return_malformed_string_when_missing_terminator(#[case] lexeme: &str, #[case] delimiter: &str) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
