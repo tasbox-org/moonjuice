@@ -49,6 +49,7 @@ pub enum TokenValue {
   Operator(Operator),
   SpecialCharacter(SpecialCharacter),
   Comment(String),
+
   UnexpectedCharacter(char),
   MalformedNumber(String),
   MalformedString(String),
@@ -76,8 +77,8 @@ impl Lexer {
     let mut tokens = vec![];
 
     while lexer.source.has_next() {
-      if let Some(token) = lexer.tokenise_next() {
-        tokens.push(token);
+      if let Some(next_tokens) = lexer.tokenise_next() {
+        tokens.extend(next_tokens);
       }
     }
 

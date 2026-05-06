@@ -5,23 +5,44 @@ use std::iter;
 use std::string::String;
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_string(&mut self) -> Option<Token> {
+  pub(in crate::lexer) fn tokenise_string(&mut self) -> Option<Vec<Token>> {
     let delimiter = self.consume_string_delimiter()?;
 
+    // let mut tokens = vec![];
+
     let mut string = "".to_string();
+    let mut contains_invalid_escapes = false;
 
     while let Some(char) = self.source.peek_next().cloned()
       && !self.source.is_match(delimiter.chars())
     {
-      string.push(char);
       self.advance();
+
+      match char {
+        '\\' => {
+          if let Some(escape_sequence) = self.consume_escape_sequence() {
+            string += escape_sequence.as_str();
+          } else {
+            contains_invalid_escapes = true;
+          }
+        }
+        _ => {
+          string.push(char);
+        }
+      }
     }
 
-    if self.source.is_match(delimiter.chars()) {
-      self.advance_by(delimiter.len());
-      Some(self.new_token(TokenValue::String(string)))
+    if !self.source.is_match(delimiter.chars()) {
+      Some(vec![
+        self.new_token(MalformedString(format!("Missing closing {}", delimiter))),
+      ])
+    } else if contains_invalid_escapes {
+      Some(vec![
+        self.new_token(MalformedString("Invalid escape sequence".to_string())),
+      ])
     } else {
-      Some(self.new_token(MalformedString(format!("Missing closing {}", delimiter))))
+      self.advance_by(delimiter.len());
+      Some(vec![self.new_token(TokenValue::String(string))])
     }
   }
 
@@ -40,6 +61,37 @@ impl Lexer {
     }
 
     Some(iter::repeat(delimiter_char).take(delimiter_length).collect())
+  }
+
+  fn consume_escape_sequence(&mut self) -> Option<String> {
+    let (value, advance_by) = match self.source.peek_next().cloned() {
+      Some('"') => Some(("\"".to_string(), 1)),
+      Some('\'') => Some(("\'".to_string(), 1)),
+      Some('n') => Some(("\n".to_string(), 1)),
+      Some('r') => Some(("\r".to_string(), 1)),
+      Some('t') => Some(("\t".to_string(), 1)),
+      Some('\\') => Some(("\\".to_string(), 1)),
+      Some('0') => Some(("\0".to_string(), 1)),
+      Some('{') => Some(("{".to_string(), 1)),
+      Some('x') => {
+        if let Some(first) = self.source.peek(1)
+          && let Some(second) = self.source.peek(2)
+          && first.is_ascii_hexdigit()
+          && second.is_ascii_hexdigit()
+          && let Ok(value) = u8::from_str_radix(format!("{}{}", first, second).as_str(), 16)
+          && value <= 0x7F
+        {
+          Some(((value as char).to_string(), 3))
+        } else {
+          None
+        }
+      }
+      _ => None,
+    }?;
+
+    self.advance_by(advance_by);
+
+    Some(value)
   }
 }
 

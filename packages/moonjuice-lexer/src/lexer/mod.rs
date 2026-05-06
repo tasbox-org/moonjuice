@@ -20,7 +20,7 @@ impl Lexer {
     }
   }
 
-  pub(crate) fn tokenise_next(&mut self) -> Option<Token> {
+  pub(crate) fn tokenise_next(&mut self) -> Option<Vec<Token>> {
     while let Some(char) = self.source.peek_next()
       && char.is_whitespace()
     {
@@ -34,20 +34,21 @@ impl Lexer {
     self.token_start_index = self.source.get_index();
     self.token_start_position = self.position.clone();
 
-    let token = self
+    let new_tokens = self
       .tokenise_comment()
-      .or(self.tokenise_numeral())
-      .or(self.tokenise_symbol())
-      .or(self.tokenise_operator())
+      .map(|token| vec![token])
+      .or(self.tokenise_numeral().map(|token| vec![token]))
+      .or(self.tokenise_symbol().map(|token| vec![token]))
+      .or(self.tokenise_operator().map(|token| vec![token]))
       .or(self.tokenise_string());
 
-    if token.is_none() {
+    if new_tokens.is_none() {
       let character = self.source.peek_next().cloned().unwrap_or('\0');
       self.advance();
 
-      Some(self.new_token(UnexpectedCharacter(character)))
+      Some(vec![self.new_token(UnexpectedCharacter(character))])
     } else {
-      token
+      new_tokens
     }
   }
 
