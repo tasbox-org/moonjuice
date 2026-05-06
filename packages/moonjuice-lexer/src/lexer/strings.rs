@@ -47,6 +47,7 @@ impl Lexer {
 mod tests {
   use super::*;
   use crate::Token;
+  use crate::TokenValue::{FormatStringEnd, FormatStringMiddle, FormatStringStart};
   use assertor::*;
   use indoc::indoc;
   use moonjuice_common::Position;
@@ -87,7 +88,9 @@ mod tests {
         {}
       "},
       delimiter, delimiter
-    );
+    )
+    .trim_end()
+    .to_string();
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -146,6 +149,52 @@ mod tests {
         column: lexeme.len() + 1,
       },
     }]);
+  }
+
+  #[test]
+  fn should_parse_format_string() {
+    let tokens = Lexer::tokenise("'start{}middle{}end'".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: FormatStringStart("start".to_string()),
+        lexeme: "'start".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 7 },
+      },
+      Token {
+        value: FormatStringMiddle("middle".to_string()),
+        lexeme: "middle".to_string(),
+        start: Position { line: 1, column: 9 },
+        end: Position { line: 1, column: 14 },
+      },
+      Token {
+        value: FormatStringEnd("end".to_string()),
+        lexeme: "end'".to_string(),
+        start: Position { line: 1, column: 16 },
+        end: Position { line: 1, column: 21 },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_parse_minimal_format_string() {
+    let tokens = Lexer::tokenise("'{}'".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: FormatStringStart("".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: FormatStringEnd("end".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 4 },
+        end: Position { line: 1, column: 5 },
+      },
+    ]);
   }
 
   #[rstest]
