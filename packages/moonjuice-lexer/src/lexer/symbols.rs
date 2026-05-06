@@ -6,7 +6,7 @@ use moonjuice_common::Keyword::*;
 use phf::phf_map;
 
 static SPECIAL_SYMBOLS: phf::Map<&'static str, TokenValue> = phf_map! {
-    "break" => Keyword(Break),
+  "break" => Keyword(Break),
   "continue" => Keyword(Continue),
   "return" => Keyword(Return),
 
@@ -71,17 +71,109 @@ mod tests {
   use moonjuice_common::Position;
   use parameterized::parameterized;
 
-  #[parameterized(symbol = { "_symbol", "symbol", "Symbol", "symbol1", "sym_bol", "SymBol", "SYM_BOL" })]
-  fn should_parse_symbol(symbol: &str) {
-    let tokens = Lexer::tokenise(symbol.chars().collect());
+  #[parameterized(lexeme = { "_symbol", "symbol", "Symbol", "symbol1", "sym_bol", "SymBol", "SYM_BOL" })]
+  fn should_parse_symbol(lexeme: &str) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
-      value: Symbol(symbol.to_string()),
-      lexeme: symbol.to_string(),
+      value: Symbol(lexeme.to_string()),
+      lexeme: lexeme.to_string(),
       start: Position { line: 1, column: 1 },
       end: Position {
         line: 1,
-        column: symbol.len() + 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[parameterized(lexeme = { "true", "false" }, value = { true, false })]
+  fn should_parse_boolean(lexeme: &str, value: bool) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Bool(value),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[parameterized(lexeme = { "not", "and", "or" }, value = { Not, And, Or })]
+  fn should_parse_operator(lexeme: &str, value: crate::Operator) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Operator(value),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[test]
+  fn should_parse_nil() {
+    let tokens = Lexer::tokenise("nil".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Nil,
+      lexeme: "nil".to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position { line: 1, column: 4 },
+    }]);
+  }
+
+  #[parameterized(
+    lexeme = {
+      "break",
+      "continue",
+      "return",
+      "do",
+      "end",
+      "fn",
+      "if",
+      "then",
+      "else",
+      "elseif",
+      "for",
+      "in",
+      "def",
+      "mut",
+      "export",
+    },
+    value = {
+      Break,
+      Continue,
+      Return,
+      Do,
+      End,
+      Function,
+      If,
+      Then,
+      Else,
+      ElseIf,
+      For,
+      In,
+      Constant,
+      Mutable,
+      Export,
+    },
+  )]
+  fn should_parse_keyword(lexeme: &str, value: moonjuice_common::Keyword) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: Keyword(value),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
       },
     }]);
   }

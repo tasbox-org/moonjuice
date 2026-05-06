@@ -89,7 +89,6 @@ mod tests {
   use super::*;
   use crate::Operator;
   use assertor::*;
-  use indoc::indoc;
   use moonjuice_common::Position;
   use parameterized::parameterized;
 
