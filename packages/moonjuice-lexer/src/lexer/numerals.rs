@@ -46,7 +46,9 @@ impl Lexer {
         }
 
         if is_float {
-          return Some(self.new_token(MalformedNumber("More than one decimal point".to_string())));
+          return Some(self.new_token(MalformedNumber(
+            "Numbers must contain no more than one decimal point".to_string(),
+          )));
         }
 
         is_float = true;
@@ -116,5 +118,74 @@ mod tests {
         column: lexeme.len() + 1,
       },
     }]);
+  }
+
+  #[parameterized(
+    lexeme = { "0x", "0b", "1.", "1_" },
+    error = { "0x", "0b", ".", "_" }
+  )]
+  fn should_handle_malformed_numbers_when_missing_following_digit(lexeme: &str, error: &str) {
+    let tokens = Lexer::tokenise(lexeme.chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![Token {
+      value: MalformedNumber(format!("A digit must follow '{}'", error)),
+      lexeme: lexeme.to_string(),
+      start: Position { line: 1, column: 1 },
+      end: Position {
+        line: 1,
+        column: lexeme.len() + 1,
+      },
+    }]);
+  }
+
+  #[parameterized(
+    prefix = { "0x", "0b" }
+  )]
+  fn should_handle_malformed_numbers_when_hex_or_binary_is_float(prefix: &str) {
+    let tokens = Lexer::tokenise(format!("{}1.2", prefix).chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: MalformedNumber("Hex and binary number literals do not support floating point".to_string()),
+        lexeme: format!("{}1.", prefix),
+        start: Position { line: 1, column: 1 },
+        end: Position {
+          line: 1,
+          column: prefix.len() + 3,
+        },
+      },
+      Token {
+        value: Int(2),
+        lexeme: "2".to_string(),
+        start: Position {
+          line: 1,
+          column: prefix.len() + 3,
+        },
+        end: Position {
+          line: 1,
+          column: prefix.len() + 4,
+        },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_handle_malformed_numbers_when_multiple_decimal_points() {
+    let tokens = Lexer::tokenise("1.2.3.4".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: MalformedNumber("Numbers must contain no more than one decimal point".to_string()),
+        lexeme: "1.2.".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 5 },
+      },
+      Token {
+        value: Double(3.4),
+        lexeme: "3.4".to_string(),
+        start: Position { line: 1, column: 5 },
+        end: Position { line: 1, column: 8 },
+      },
+    ]);
   }
 }
