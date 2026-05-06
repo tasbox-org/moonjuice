@@ -7,6 +7,7 @@ use std::ops::Range;
 mod comments;
 mod numerals;
 mod operators;
+mod strings;
 mod symbols;
 
 impl Lexer {
@@ -37,7 +38,8 @@ impl Lexer {
       .tokenise_comment()
       .or(self.tokenise_numeral())
       .or(self.tokenise_symbol())
-      .or(self.tokenise_operator());
+      .or(self.tokenise_operator())
+      .or(self.tokenise_string());
 
     if token.is_none() {
       let character = self.source.peek_next().cloned().unwrap_or('\0');

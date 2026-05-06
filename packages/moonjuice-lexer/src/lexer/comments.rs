@@ -61,11 +61,11 @@ mod tests {
   fn should_parse_multiline_comment() {
     let tokens = Lexer::tokenise(
       indoc! {"
-      --[[
-        This is a multi-line
-        comment.
-      --]]
-    "}
+        --[[
+          This is a multi-line
+          comment.
+        --]]
+      "}
       .chars()
       .collect(),
     );
@@ -82,10 +82,10 @@ mod tests {
   fn should_parse_multiline_comment_when_overrunning() {
     let tokens = Lexer::tokenise(
       indoc! {"
-      --[[
-        This is a multi-line
-        comment.
-    "}
+        --[[
+          This is a multi-line
+          comment.
+      "}
       .chars()
       .collect(),
     );

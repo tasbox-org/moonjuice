@@ -48,6 +48,7 @@ pub enum TokenValue {
   Comment(String),
   UnexpectedCharacter(char),
   MalformedNumber(String),
+  MalformedString(String),
 }
 
 #[derive(PartialEq, Debug)]
