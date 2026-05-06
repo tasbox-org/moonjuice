@@ -55,8 +55,10 @@ impl Lexer {
     let token = self.tokenise_comment().or(self.tokenise_symbol());
 
     if token.is_none() {
+      let character = self.source.peek_next().cloned().unwrap_or('\0');
       self.advance();
-      Some(self.new_token(UnexpectedCharacter(self.source.peek_next().cloned().unwrap_or('\0'))))
+
+      Some(self.new_token(UnexpectedCharacter(character)))
     } else {
       token
     }
