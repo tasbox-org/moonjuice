@@ -1,6 +1,6 @@
+use crate::Token;
+use crate::TokenValue::{Double, Int, MalformedNumber};
 use crate::lexer::Lexer;
-use crate::token::Token;
-use crate::token::TokenValue::*;
 
 impl Lexer {
   pub(in crate::lexer) fn tokenise_numeral(&mut self) -> Option<Token> {
@@ -48,7 +48,7 @@ impl Lexer {
       if self.source.is_match("_".chars()) {
         self.advance();
         requires_digit_for = Some("_");
-      } else if self.source.is_match(".".chars()) {
+      } else if self.source.is_match(".".chars()) && !self.source.is_match("..".chars()) {
         self.advance();
 
         num_decimal_points += 1;
@@ -105,6 +105,8 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::Token;
+  use crate::TokenValue::{Double, MalformedNumber};
   use assertor::*;
   use moonjuice_common::Position;
   use parameterized::parameterized;
@@ -215,5 +217,25 @@ mod tests {
         column: lexeme.len() + 1,
       },
     }]);
+  }
+
+  #[test]
+  fn should_not_consume_concat_operator() {
+    let tokens = Lexer::tokenise("1..2".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: Int(1),
+        lexeme: "1".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: Int(2),
+        lexeme: "2".to_string(),
+        start: Position { line: 1, column: 4 },
+        end: Position { line: 1, column: 5 },
+      },
+    ])
   }
 }

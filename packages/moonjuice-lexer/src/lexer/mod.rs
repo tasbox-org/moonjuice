@@ -1,36 +1,16 @@
-use crate::token::TokenValue::UnexpectedCharacter;
-use crate::token::{Token, TokenValue};
+use crate::TokenValue::UnexpectedCharacter;
+use crate::{Lexer, Token, TokenValue};
 use moonjuice_common::Position;
 use moonjuice_common::peekable_stream::PeekableStream;
 use std::ops::Range;
 
 mod comments;
 mod numerals;
+mod operators;
 mod symbols;
 
-pub struct Lexer {
-  source: PeekableStream<char>,
-  position: Position,
-
-  token_start_index: usize,
-  token_start_position: Position,
-}
-
 impl Lexer {
-  pub fn tokenise(source: Vec<char>) -> Vec<Token> {
-    let mut lexer = Lexer::new(source);
-    let mut tokens = vec![];
-
-    while lexer.source.has_next() {
-      if let Some(token) = lexer.tokenise_next() {
-        tokens.push(token);
-      }
-    }
-
-    tokens
-  }
-
-  fn new(source: Vec<char>) -> Self {
+  pub(crate) fn new(source: Vec<char>) -> Self {
     Lexer {
       source: PeekableStream::new(source),
       position: Position { line: 1, column: 1 },
@@ -39,7 +19,7 @@ impl Lexer {
     }
   }
 
-  fn tokenise_next(&mut self) -> Option<Token> {
+  pub(crate) fn tokenise_next(&mut self) -> Option<Token> {
     while let Some(char) = self.source.peek_next()
       && char.is_whitespace()
     {

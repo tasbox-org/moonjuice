@@ -1,6 +1,6 @@
+use crate::Token;
+use crate::TokenValue::Comment;
 use crate::lexer::Lexer;
-use crate::token::Token;
-use crate::token::TokenValue::Comment;
 
 impl Lexer {
   pub(in crate::lexer) fn tokenise_comment(&mut self) -> Option<Token> {
@@ -39,6 +39,8 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::Token;
+  use crate::TokenValue::Comment;
   use assertor::*;
   use indoc::indoc;
   use moonjuice_common::Position;

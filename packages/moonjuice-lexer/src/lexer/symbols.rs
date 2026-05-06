@@ -1,8 +1,8 @@
+use crate::Operator::{And, Not, Or};
+use crate::TokenValue::{Bool, Keyword, Nil, Operator, Symbol};
 use crate::lexer::Lexer;
-use crate::token::TokenValue::*;
-use crate::token::{Token, TokenValue};
+use crate::{Token, TokenValue};
 use moonjuice_common::Keyword::*;
-use moonjuice_common::Operator::*;
 use phf::phf_map;
 
 static SPECIAL_SYMBOLS: phf::Map<&'static str, TokenValue> = phf_map! {
@@ -34,7 +34,7 @@ static SPECIAL_SYMBOLS: phf::Map<&'static str, TokenValue> = phf_map! {
   "and" => Operator(And),
   "or" => Operator(Or),
 
-  "nil" => Nil{},
+  "nil" => Nil,
 };
 
 impl Lexer {
@@ -65,6 +65,8 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::Token;
+  use crate::TokenValue::Symbol;
   use assertor::*;
   use moonjuice_common::Position;
   use parameterized::parameterized;

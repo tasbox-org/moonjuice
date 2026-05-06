@@ -31,41 +31,6 @@ pub enum Keyword {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Operator {
-  Add,
-  Subtract,
-  Multiply,
-  Divide,
-  Modulo,
-  Concat,
-  Length,
-  Not,
-  And,
-  Or,
-  OptionalCoalesce,
-  Equals,
-  NotEquals,
-  LessThan,
-  GreaterThan,
-  LessThanOrEqual,
-  GreaterThanOrEqual,
-  Pipe,
-  Index,
-  OptionalIndex,
-  IndexExpression,
-  OptionalIndexExpression,
-  Call,
-  OptionalCall,
-  Assignment,
-  BitwiseNot,
-  BitwiseAnd,
-  BitwiseOr,
-  BitwiseXor,
-  LeftShift,
-  RightShift,
-}
-
-#[derive(Debug, Clone, PartialEq)]
 pub enum SpecialCharacter {
   OpenBracket,
   CloseBracket,
