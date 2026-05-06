@@ -38,16 +38,22 @@ impl Lexer {
       tokens.push(self.new_token(token_value));
       self.advance();
 
-      while self.source.has_next() {
-        tokens.extend(self.tokenise_next());
-
-        if tokens
+      while self.source.has_next()
+        && tokens
           .last()
-          .is_some_and(|token| matches!(token.value, SpecialCharacter(CloseCurlyBracket)))
-        {
-          tokens.pop();
-          break;
-        }
+          .is_none_or(|token| !matches!(token.value, SpecialCharacter(CloseCurlyBracket)))
+      {
+        tokens.extend(self.tokenise_next());
+      }
+
+      if tokens
+        .last()
+        .is_some_and(|token| matches!(token.value, SpecialCharacter(CloseCurlyBracket)))
+      {
+        tokens.pop();
+      } else {
+        tokens.push(self.new_token(MalformedString(End, "Missing closing }".to_string())));
+        break;
       }
     }
 
@@ -347,6 +353,92 @@ mod tests {
         lexeme: "'".to_string(),
         start: Position { line: 1, column: 4 },
         end: Position { line: 1, column: 5 },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_parse_nested_format_string() {
+    let tokens = Lexer::tokenise("'{}'".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: TokenValue::String(Start, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: TokenValue::String(End, "end".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 4 },
+        end: Position { line: 1, column: 5 },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_parse_unterminated_format_string_hole() {
+    let tokens = Lexer::tokenise("'{".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: TokenValue::String(Start, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: MalformedString(End, "Missing closing }".to_string()),
+        lexeme: "".to_string(),
+        start: Position { line: 1, column: 3 },
+        end: Position { line: 1, column: 3 },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_parse_unterminated_format_string_hole_beginning_new_string() {
+    let tokens = Lexer::tokenise("'{'".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: TokenValue::String(Start, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: MalformedString(Whole, "Missing closing '".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 3 },
+        end: Position { line: 1, column: 4 },
+      },
+      Token {
+        value: MalformedString(Whole, "Missing closing }".to_string()),
+        lexeme: "".to_string(),
+        start: Position { line: 1, column: 4 },
+        end: Position { line: 1, column: 4 },
+      },
+    ]);
+  }
+
+  #[test]
+  fn should_parse_unterminated_format_string() {
+    let tokens = Lexer::tokenise("'{}".chars().collect());
+
+    assert_that!(tokens).contains_exactly_in_order(vec![
+      Token {
+        value: TokenValue::String(Start, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 1 },
+        end: Position { line: 1, column: 2 },
+      },
+      Token {
+        value: MalformedString(Whole, "Missing closing '".to_string()),
+        lexeme: "".to_string(),
+        start: Position { line: 1, column: 4 },
+        end: Position { line: 1, column: 4 },
       },
     ]);
   }
