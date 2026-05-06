@@ -44,14 +44,16 @@ impl Lexer {
       .or(self.tokenise_string())
       .or(self.tokenise_special_character().map(|token| vec![token]));
 
-    if let Some(tokens) = tokens {
+    let tokens = if let Some(tokens) = tokens {
       tokens
     } else {
       let character = self.source.peek_next().cloned().unwrap_or('\0');
       self.advance();
 
       vec![self.new_token(UnexpectedCharacter(character))]
-    }
+    };
+
+    tokens
   }
 
   fn new_token(&self, value: TokenValue) -> Token {

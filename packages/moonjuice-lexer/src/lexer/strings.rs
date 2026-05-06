@@ -12,7 +12,7 @@ impl Lexer {
 
     let mut tokens = vec![];
 
-    while self.source.has_next() {
+    loop {
       let result = self.tokenise_string_segment(delimiter.clone());
       let next_is_hole = self.source.peek_next().is_some_and(|char| *char == '{');
 
@@ -45,6 +45,9 @@ impl Lexer {
       {
         tokens.extend(self.tokenise_next());
       }
+
+      self.token_start_index = self.source.get_index();
+      self.token_start_position = self.position.clone();
 
       if tokens
         .last()
@@ -326,12 +329,12 @@ mod tests {
         value: TokenValue::String(Middle, "middle".to_string()),
         lexeme: "middle".to_string(),
         start: Position { line: 1, column: 9 },
-        end: Position { line: 1, column: 14 },
+        end: Position { line: 1, column: 15 },
       },
       Token {
         value: TokenValue::String(End, "end".to_string()),
         lexeme: "end'".to_string(),
-        start: Position { line: 1, column: 16 },
+        start: Position { line: 1, column: 17 },
         end: Position { line: 1, column: 21 },
       },
     ]);
@@ -349,7 +352,7 @@ mod tests {
         end: Position { line: 1, column: 2 },
       },
       Token {
-        value: TokenValue::String(End, "end".to_string()),
+        value: TokenValue::String(End, "".to_string()),
         lexeme: "'".to_string(),
         start: Position { line: 1, column: 4 },
         end: Position { line: 1, column: 5 },
@@ -359,7 +362,7 @@ mod tests {
 
   #[test]
   fn should_parse_nested_format_string() {
-    let tokens = Lexer::tokenise("'{}'".chars().collect());
+    let tokens = Lexer::tokenise("'{'{'{}'}'}'".chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![
       Token {
@@ -369,10 +372,34 @@ mod tests {
         end: Position { line: 1, column: 2 },
       },
       Token {
-        value: TokenValue::String(End, "end".to_string()),
+        value: TokenValue::String(Start, "".to_string()),
         lexeme: "'".to_string(),
-        start: Position { line: 1, column: 4 },
-        end: Position { line: 1, column: 5 },
+        start: Position { line: 1, column: 3 },
+        end: Position { line: 1, column: 4 },
+      },
+      Token {
+        value: TokenValue::String(Start, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 5 },
+        end: Position { line: 1, column: 6 },
+      },
+      Token {
+        value: TokenValue::String(End, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 8 },
+        end: Position { line: 1, column: 9 },
+      },
+      Token {
+        value: TokenValue::String(End, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 10 },
+        end: Position { line: 1, column: 11 },
+      },
+      Token {
+        value: TokenValue::String(End, "".to_string()),
+        lexeme: "'".to_string(),
+        start: Position { line: 1, column: 12 },
+        end: Position { line: 1, column: 13 },
       },
     ]);
   }
@@ -415,7 +442,7 @@ mod tests {
         end: Position { line: 1, column: 4 },
       },
       Token {
-        value: MalformedString(Whole, "Missing closing }".to_string()),
+        value: MalformedString(End, "Missing closing }".to_string()),
         lexeme: "".to_string(),
         start: Position { line: 1, column: 4 },
         end: Position { line: 1, column: 4 },
@@ -435,7 +462,7 @@ mod tests {
         end: Position { line: 1, column: 2 },
       },
       Token {
-        value: MalformedString(Whole, "Missing closing '".to_string()),
+        value: MalformedString(End, "Missing closing '".to_string()),
         lexeme: "".to_string(),
         start: Position { line: 1, column: 4 },
         end: Position { line: 1, column: 4 },
