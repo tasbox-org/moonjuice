@@ -1,6 +1,7 @@
 use crate::Parser;
-use crate::nodes::statement::Statement::{Return, SyntaxError};
-use crate::nodes::statement::StatementNode;
+use crate::nodes::statement::Statement::SyntaxError;
+use crate::nodes::statement::{Statement, StatementNode};
+use moonjuice_common::Keyword::Return;
 use moonjuice_lexer::TokenValue;
 
 impl Parser {
@@ -10,7 +11,7 @@ impl Parser {
     if self
       .tokens
       .consume()
-      .is_none_or(|token| matches!(token.value, TokenValue::Keyword(_)))
+      .is_none_or(|token| token.value != TokenValue::Keyword(Return))
     {
       StatementNode {
         value: SyntaxError("Expected 'return' keyword".to_string()).into(),
@@ -19,7 +20,7 @@ impl Parser {
       }
     } else {
       StatementNode {
-        value: Return(self.parse_expression()).into(),
+        value: Statement::Return(self.parse_expression()).into(),
         start,
         end: self.get_end(),
       }
