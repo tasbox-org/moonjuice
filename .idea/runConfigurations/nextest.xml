@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="moonjuice-lexer: nextest" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="nextest run --package moonjuice-lexer" />
+  <configuration default="false" name="nextest" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+    <option name="command" value="nextest run" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs />
     <option name="emulateTerminal" value="true" />
