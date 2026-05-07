@@ -69,10 +69,17 @@ mod tests {
   use crate::TokenValue::Symbol;
   use assertor::*;
   use moonjuice_common::Position;
-  use parameterized::parameterized;
+  use rstest::rstest;
 
-  #[parameterized(lexeme = { "_symbol", "symbol", "Symbol", "symbol1", "sym_bol", "SymBol", "SYM_BOL" })]
-  fn should_parse_symbol(lexeme: &str) {
+  #[rstest]
+  #[case("_symbol")]
+  #[case("symbol")]
+  #[case("Symbol")]
+  #[case("symbol1")]
+  #[case("sym_bol")]
+  #[case("SymBol")]
+  #[case("SYM_BOL")]
+  fn should_parse_symbol(#[case] lexeme: &str) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -86,8 +93,10 @@ mod tests {
     }]);
   }
 
-  #[parameterized(lexeme = { "true", "false" }, value = { true, false })]
-  fn should_parse_boolean(lexeme: &str, value: bool) {
+  #[rstest]
+  #[case("true", true)]
+  #[case("false", false)]
+  fn should_parse_boolean(#[case] lexeme: &str, #[case] value: bool) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -101,8 +110,11 @@ mod tests {
     }]);
   }
 
-  #[parameterized(lexeme = { "not", "and", "or" }, value = { Not, And, Or })]
-  fn should_parse_operator(lexeme: &str, value: crate::Operator) {
+  #[rstest]
+  #[case("not", Not)]
+  #[case("and", And)]
+  #[case("or", Or)]
+  fn should_parse_operator(#[case] lexeme: &str, #[case] value: crate::Operator) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -128,43 +140,23 @@ mod tests {
     }]);
   }
 
-  #[parameterized(
-    lexeme = {
-      "break",
-      "continue",
-      "return",
-      "do",
-      "end",
-      "fn",
-      "if",
-      "then",
-      "else",
-      "elseif",
-      "for",
-      "in",
-      "def",
-      "mut",
-      "export",
-    },
-    value = {
-      Break,
-      Continue,
-      Return,
-      Do,
-      End,
-      Function,
-      If,
-      Then,
-      Else,
-      ElseIf,
-      For,
-      In,
-      Constant,
-      Mutable,
-      Export,
-    },
-  )]
-  fn should_parse_keyword(lexeme: &str, value: moonjuice_common::Keyword) {
+  #[rstest]
+  #[case("break", Break)]
+  #[case("continue", Continue)]
+  #[case("return", Return)]
+  #[case("do", Do)]
+  #[case("end", End)]
+  #[case("fn", Function)]
+  #[case("if", If)]
+  #[case("then", Then)]
+  #[case("else", Else)]
+  #[case("elseif", ElseIf)]
+  #[case("for", For)]
+  #[case("in", In)]
+  #[case("def", Constant)]
+  #[case("mut", Mutable)]
+  #[case("export", Export)]
+  fn should_parse_keyword(#[case] lexeme: &str, #[case] value: moonjuice_common::Keyword) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
