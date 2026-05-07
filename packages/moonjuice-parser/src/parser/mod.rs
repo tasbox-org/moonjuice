@@ -21,12 +21,7 @@ impl Parser {
 
   pub(crate) fn parse_block(&mut self, has_remaining: impl Fn(&Self) -> bool) -> ExpressionNode {
     let mut block: Vec<StatementNode> = vec![];
-    let start = self
-      .tokens
-      .peek_next()
-      .map(|token| token.start.clone())
-      .or_else(|| self.tokens.peek_back(1).map(|token| token.end.clone()))
-      .unwrap_or(Position { line: 1, column: 1 });
+    let start = self.get_start();
 
     while has_remaining(self) {
       let node = if self.is_next(Keyword(Constant)) || self.is_next(Keyword(Mutable)) || self.is_next(Keyword(Export)) {
@@ -47,16 +42,10 @@ impl Parser {
       block.push(node);
     }
 
-    let end = self
-      .tokens
-      .peek_back(1)
-      .map(|token| token.end.clone())
-      .unwrap_or(Position { line: 1, column: 1 });
-
     ExpressionNode {
       value: Block(block).into(),
       start,
-      end,
+      end: self.get_end(),
     }
   }
 
@@ -67,5 +56,26 @@ impl Parser {
       }) => *actual_value == value,
       _ => false,
     }
+  }
+
+  fn consume_if(&mut self, predicate: impl Fn(TokenValue) -> bool) -> Option<&Token> {
+    self.tokens.consume_if(|token| predicate(token.value.clone()))
+  }
+
+  fn get_start(&self) -> Position {
+    self
+      .tokens
+      .peek_next()
+      .map(|token| token.start.clone())
+      .or_else(|| self.tokens.peek_back(1).map(|token| token.end.clone()))
+      .unwrap_or(Position { line: 1, column: 1 })
+  }
+
+  fn get_end(&self) -> Position {
+    self
+      .tokens
+      .peek_back(1)
+      .map(|token| token.end.clone())
+      .unwrap_or(Position { line: 1, column: 1 })
   }
 }
