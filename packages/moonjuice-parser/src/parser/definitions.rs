@@ -9,7 +9,7 @@ use moonjuice_common::SpecialCharacter::Comma;
 use moonjuice_lexer::TokenValue::{Keyword, Operator, SpecialCharacter};
 
 impl Parser {
-  pub(in crate::parser) fn parse_definition(&mut self) -> StatementNode {
+  pub(super) fn parse_definition(&mut self) -> StatementNode {
     let start = self.get_start();
 
     if let Some(keyword) = self.tokens.consume()

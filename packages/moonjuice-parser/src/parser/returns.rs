@@ -5,7 +5,7 @@ use moonjuice_common::Keyword::Return;
 use moonjuice_lexer::TokenValue;
 
 impl Parser {
-  pub(in crate::parser) fn parse_return(&mut self) -> StatementNode {
+  pub(super) fn parse_return(&mut self) -> StatementNode {
     let start = self.get_start();
 
     if self

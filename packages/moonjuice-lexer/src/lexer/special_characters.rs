@@ -6,7 +6,7 @@ use moonjuice_common::SpecialCharacter::{
 };
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_special_character(&mut self) -> Option<Token> {
+  pub(super) fn tokenise_special_character(&mut self) -> Option<Token> {
     let value = match self.source.peek_next() {
       Some('(') => Some(OpenBracket),
       Some(')') => Some(CloseBracket),

@@ -7,7 +7,7 @@ use std::iter;
 use std::string::String;
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_string(&mut self) -> Option<Vec<Token>> {
+  pub(super) fn tokenise_string(&mut self) -> Option<Vec<Token>> {
     let delimiter = self.consume_string_delimiter()?;
 
     let mut tokens = vec![];

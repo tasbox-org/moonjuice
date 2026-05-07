@@ -3,7 +3,7 @@ use crate::TokenValue::{Double, Int, MalformedNumber};
 use crate::lexer::Lexer;
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_numeral(&mut self) -> Option<Token> {
+  pub(super) fn tokenise_numeral(&mut self) -> Option<Token> {
     if !self.source.peek_next().is_some_and(|char| char.is_ascii_digit()) {
       return None;
     }

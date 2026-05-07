@@ -3,7 +3,7 @@ use crate::TokenValue::Comment;
 use crate::lexer::Lexer;
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_comment(&mut self) -> Option<Token> {
+  pub(super) fn tokenise_comment(&mut self) -> Option<Token> {
     if !self.source.is_match("--".chars()) {
       return None;
     }

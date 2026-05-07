@@ -38,7 +38,7 @@ static SPECIAL_SYMBOLS: phf::Map<&'static str, TokenValue> = phf_map! {
 };
 
 impl Lexer {
-  pub(in crate::lexer) fn tokenise_symbol(&mut self) -> Option<Token> {
+  pub(super) fn tokenise_symbol(&mut self) -> Option<Token> {
     if !self
       .source
       .peek_next()
