@@ -268,6 +268,7 @@ mod tests {
   #[case("\\0", "\0")]
   #[case("\\x41", "\x41")]
   #[case("\\u{263A}", "☺")]
+  #[case("\\u{10FFFF}", "\u{10FFFF}")]
   #[case("\\{}", "{}")]
   fn should_parse_escape_sequences(#[case] sequence: &str, #[case] value: &str) {
     let lexeme = format!("'{}'", sequence,);
@@ -289,6 +290,10 @@ mod tests {
   #[case("\\x80")]
   #[case("\\xGG")]
   #[case("\\u{}")]
+  #[case("\\u{110000}")]
+  #[case("\\u{FF")]
+  #[case("\\uFF}")]
+  #[case("\\u{G}")]
   fn should_parse_malformed_escape_sequences(#[case] sequence: &str) {
     let lexeme = format!("'{}'", sequence,);
     let tokens = Lexer::tokenise(lexeme.chars().collect());
