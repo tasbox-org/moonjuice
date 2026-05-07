@@ -1,6 +1,15 @@
+mod binary_operators;
+mod breaks;
 mod definitions;
 mod expressions;
+mod for_loops;
+mod functions;
+mod if_statements;
+mod lvalues;
+mod operands;
 mod returns;
+mod table_definitions;
+mod unary_operators;
 
 use crate::Parser;
 use crate::nodes::expression::Expression::Block;
