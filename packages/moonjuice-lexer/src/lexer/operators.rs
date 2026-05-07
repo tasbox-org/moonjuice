@@ -86,63 +86,34 @@ mod tests {
   use crate::Operator;
   use assertor::*;
   use moonjuice_common::Position;
-  use parameterized::parameterized;
+  use rstest::rstest;
 
-  #[parameterized(
-    lexeme = {
-      "+",
-      "-",
-      "*",
-      "/",
-      "%",
-      "..",
-      "#",
-      "??",
-      "==",
-      "~=",
-      "<",
-      ">",
-      "<=",
-      ">=",
-      "|>",
-      ".",
-      "?.",
-      "=",
-      "~",
-      "&",
-      "|",
-      "^",
-      "<<",
-      ">>"
-    },
-    operator = {
-      Add,
-      Subtract,
-      Multiply,
-      Divide,
-      Modulo,
-      Concat,
-      Length,
-      OptionalCoalesce,
-      Equals,
-      NotEquals,
-      LessThan,
-      GreaterThan,
-      LessThanOrEqual,
-      GreaterThanOrEqual,
-      Pipe,
-      Index,
-      OptionalIndex,
-      Assignment,
-      BitwiseNot,
-      BitwiseAnd,
-      BitwiseOr,
-      BitwiseXor,
-      LeftShift,
-      RightShift,
-    }
-  )]
-  fn should_parse_operator(lexeme: &str, operator: Operator) {
+  #[rstest]
+  #[case("+", Add)]
+  #[case("-", Subtract)]
+  #[case("*", Multiply)]
+  #[case("/", Divide)]
+  #[case("%", Modulo)]
+  #[case("..", Concat)]
+  #[case("#", Length)]
+  #[case("??", OptionalCoalesce)]
+  #[case("==", Equals)]
+  #[case("~=", NotEquals)]
+  #[case("<", LessThan)]
+  #[case(">", GreaterThan)]
+  #[case("<=", LessThanOrEqual)]
+  #[case(">=", GreaterThanOrEqual)]
+  #[case("|>", Pipe)]
+  #[case(".", Index)]
+  #[case("?.", OptionalIndex)]
+  #[case("=", Assignment)]
+  #[case("~", BitwiseNot)]
+  #[case("&", BitwiseAnd)]
+  #[case("|", BitwiseOr)]
+  #[case("^", BitwiseXor)]
+  #[case("<<", LeftShift)]
+  #[case(">>", RightShift)]
+  fn should_parse_operator(#[case] lexeme: &str, #[case] operator: Operator) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
