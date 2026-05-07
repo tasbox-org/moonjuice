@@ -119,7 +119,13 @@ impl Parser {
       }
       Some(Comment(_)) => {
         self.tokens.consume();
-        self.parse_operand()
+
+        ExpressionNode {
+          value: SyntaxError("Comments were not stripped from parser tokens (this should not happen!)".to_string())
+            .into(),
+          start,
+          end: self.get_end(),
+        }
       }
       Some(UnexpectedCharacter(char)) => {
         self.tokens.consume();

@@ -24,7 +24,12 @@ use moonjuice_lexer::{Token, TokenValue};
 impl Parser {
   pub(crate) fn new(tokens: Vec<Token>) -> Self {
     Parser {
-      tokens: PeekableStream::new(tokens),
+      tokens: PeekableStream::new(
+        tokens
+          .into_iter()
+          .filter(|token| !matches!(token.value, TokenValue::Comment(_)))
+          .collect(),
+      ),
     }
   }
 
