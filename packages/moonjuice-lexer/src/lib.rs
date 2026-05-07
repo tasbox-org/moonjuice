@@ -1,38 +1,7 @@
 use moonjuice_common::peekable_stream::PeekableStream;
-use moonjuice_common::{Keyword, Position, SpecialCharacter};
+use moonjuice_common::{Keyword, Operator, Position, SpecialCharacter};
 
 mod lexer;
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum Operator {
-  Add,
-  Subtract,
-  Multiply,
-  Divide,
-  Modulo,
-  Concat,
-  Length,
-  Not,
-  And,
-  Or,
-  OptionalCoalesce,
-  Equals,
-  NotEquals,
-  LessThan,
-  GreaterThan,
-  LessThanOrEqual,
-  GreaterThanOrEqual,
-  Pipe,
-  Index,
-  OptionalIndex,
-  Assignment,
-  BitwiseNot,
-  BitwiseAnd,
-  BitwiseOr,
-  BitwiseXor,
-  LeftShift,
-  RightShift,
-}
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum StringTokenType {

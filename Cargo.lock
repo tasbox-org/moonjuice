@@ -141,6 +141,14 @@ dependencies = [
 [[package]]
 name = "moonjuice-parser"
 version = "0.1.0"
+dependencies = [
+ "assertor",
+ "indoc",
+ "moonjuice-common",
+ "moonjuice-lexer",
+ "phf",
+ "rstest",
+]
 
 [[package]]
 name = "moonjuice-transpiler-luau"

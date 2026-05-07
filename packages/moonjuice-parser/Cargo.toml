@@ -4,3 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+moonjuice-common = { path = "../moonjuice-common", version = "0.1.0" }
+moonjuice-lexer = { path = "../moonjuice-lexer", version = "0.1.0" }
+phf = { version = "0.13.1", features = ["macros"] }
+
+[dev-dependencies]
+assertor = "*"
+indoc = "2"
+rstest = "0.26.1"
