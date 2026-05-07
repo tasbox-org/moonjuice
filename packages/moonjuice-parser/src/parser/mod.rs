@@ -15,7 +15,7 @@ use crate::Parser;
 use crate::nodes::expression::Expression::Block;
 use crate::nodes::expression::ExpressionNode;
 use crate::nodes::statement::{Statement, StatementNode};
-use moonjuice_common::Keyword::{Constant, Export, Mutable, Return};
+use moonjuice_common::Keyword::{Break, Constant, Export, Mutable, Return};
 use moonjuice_common::Position;
 use moonjuice_common::peekable_stream::PeekableStream;
 use moonjuice_lexer::TokenValue::Keyword;
@@ -37,6 +37,8 @@ impl Parser {
         self.parse_definition()
       } else if self.is_next(Keyword(Return)) {
         self.parse_return()
+      } else if self.is_next(Keyword(Break)) {
+        self.parse_break()
       } else {
         // TODO #156: Handle multiple return
         let expr = self.parse_expression();
