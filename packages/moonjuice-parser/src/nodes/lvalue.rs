@@ -10,6 +10,7 @@ pub struct TableUnpackElement {
 pub enum LValue {
   Symbol(String),
   TableUnpack { elements: Vec<TableUnpackElement> },
+  SyntaxError(String),
 }
 
 pub struct LValueNode {

@@ -54,6 +54,7 @@ pub enum Expression {
     lhs: ExpressionNode,
     arguments: Vec<ExpressionNode>,
   },
+  SyntaxError(String),
 }
 
 pub struct ExpressionNode {

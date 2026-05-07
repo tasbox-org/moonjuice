@@ -1,5 +1,5 @@
 use crate::nodes::Node;
-use crate::nodes::expression::ExpressionNode;
+use crate::nodes::expression::{Expression, ExpressionNode};
 use crate::nodes::lvalue::LValueNode;
 use moonjuice_common::Position;
 
@@ -12,7 +12,8 @@ pub enum Statement {
   },
   Return(ExpressionNode),
   Break,
-  Expression(ExpressionNode),
+  Expression(Expression),
+  SyntaxError(String),
 }
 
 pub struct StatementNode {
