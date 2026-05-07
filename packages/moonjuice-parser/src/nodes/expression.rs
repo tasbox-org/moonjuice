@@ -15,9 +15,9 @@ pub struct IfBranch {
 
 pub enum Expression {
   Nil,
-  Boolean(bool),
-  Integer(i64),
-  Number(f64),
+  Bool(bool),
+  Int(i64),
+  Double(f64),
   String {
     segments: Vec<String>,
     arguments: Vec<ExpressionNode>,
