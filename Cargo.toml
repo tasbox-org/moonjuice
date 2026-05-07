@@ -1,3 +1,8 @@
 [workspace]
 resolver = "3"
-members = ["packages/moonjuice-common", "packages/moonjuice-lexer"]
+members = [
+  "packages/moonjuice-common",
+  "packages/moonjuice-lexer",
+  "packages/moonjuice-parser",
+  "packages/moonjuice-transpiler-luau"
+]
