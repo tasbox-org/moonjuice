@@ -139,6 +139,39 @@ impl Lexer {
           None
         }
       }
+      Some('u') => {
+        if let Some(opener) = self.source.peek(1)
+          && *opener == '{'
+        {
+          self.advance_by(2);
+          let start_index = self.source.get_index();
+
+          for _ in 0..6 {
+            if self.source.peek_next().is_none_or(|char| !char.is_ascii_hexdigit()) {
+              break;
+            }
+
+            self.advance();
+          }
+
+          if self.source.peek_next().is_none_or(|char| *char != '}') {
+            None
+          } else {
+            let hex_code = self.read_string(start_index..self.source.get_index());
+            self.advance();
+
+            if let Ok(codepoint) = u32::from_str_radix(hex_code.as_str(), 16)
+              && let Some(value) = char::from_u32(codepoint)
+            {
+              Some((value.to_string(), 0))
+            } else {
+              None
+            }
+          }
+        } else {
+          None
+        }
+      }
       _ => None,
     }?;
 
