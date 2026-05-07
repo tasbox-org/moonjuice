@@ -110,13 +110,15 @@ mod tests {
   use crate::TokenValue::{Double, MalformedNumber, Operator};
   use assertor::*;
   use moonjuice_common::Position;
-  use parameterized::parameterized;
+  use rstest::rstest;
 
-  #[parameterized(
-    lexeme = { "123", "0xA4", "0b1101", "1_234" },
-    value = { 123, 0xA4, 0b1101, 1234 }
-  )]
-  fn should_parse_integer_numeral(lexeme: &str, value: i64) {
+  #[rstest]
+  #[case("123", 123)]
+  #[case("0xA4", 0xA4)]
+  #[case("0xbc", 0xBC)]
+  #[case("0b1101", 0b1101)]
+  #[case("1_234", 1234)]
+  fn should_parse_integer_numeral(#[case] lexeme: &str, #[case] value: i64) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -130,11 +132,10 @@ mod tests {
     }]);
   }
 
-  #[parameterized(
-    lexeme = { "1.23", "1_234.567_89" },
-    value = { 1.23, 1234.56789 }
-  )]
-  fn should_parse_float_numeral(lexeme: &str, value: f64) {
+  #[rstest]
+  #[case("1.23", 1.23)]
+  #[case("1_234.567_89", 1234.56789)]
+  fn should_parse_float_numeral(#[case] lexeme: &str, #[case] value: f64) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -148,11 +149,12 @@ mod tests {
     }]);
   }
 
-  #[parameterized(
-    lexeme = { "0x", "0b", "1.", "1_" },
-    error = { "0x", "0b", ".", "_" }
-  )]
-  fn should_handle_malformed_numbers_when_missing_following_digit(lexeme: &str, error: &str) {
+  #[rstest]
+  #[case("0x", "0x")]
+  #[case("0b", "0b")]
+  #[case("1.", ".")]
+  #[case("1_", "_")]
+  fn should_handle_malformed_numbers_when_missing_following_digit(#[case] lexeme: &str, #[case] error: &str) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -166,10 +168,10 @@ mod tests {
     }]);
   }
 
-  #[parameterized(
-    prefix = { "0x", "0b" }
-  )]
-  fn should_handle_malformed_numbers_when_hex_or_binary_is_float(prefix: &str) {
+  #[rstest]
+  #[case("0x")]
+  #[case("0b")]
+  fn should_handle_malformed_numbers_when_hex_or_binary_is_float(#[case] prefix: &str) {
     let tokens = Lexer::tokenise(format!("{}1.1", prefix).chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
@@ -195,18 +197,14 @@ mod tests {
     }]);
   }
 
-  #[parameterized(
-    lexeme = { "12FAB", "0b0123", "0b12AB", "1G", "0b1G", "0x1G" },
-    error = {
-      "Number contains hexadecimal digits, did you mean 0x12FAB?",
-      "Number contains decimal digits, did you mean 0123?",
-      "Number contains hexadecimal digits, did you mean 0x12AB?",
-      "Number '1G' contains invalid characters",
-      "Number '0b1G' contains invalid characters",
-      "Number '0x1G' contains invalid characters"
-    }
-  )]
-  fn should_handle_malformed_numbers_when_unsupported_digit_for_radix(lexeme: &str, error: &str) {
+  #[rstest]
+  #[case("12FAB", "Number contains hexadecimal digits, did you mean 0x12FAB?")]
+  #[case("0b0123", "Number contains decimal digits, did you mean 0123?")]
+  #[case("0b12AB", "Number contains hexadecimal digits, did you mean 0x12AB?")]
+  #[case("1G", "Number '1G' contains invalid characters")]
+  #[case("0b1G", "Number '0b1G' contains invalid characters")]
+  #[case("0x1G", "Number '0x1G' contains invalid characters")]
+  fn should_handle_malformed_numbers_when_unsupported_digit_for_radix(#[case] lexeme: &str, #[case] error: &str) {
     let tokens = Lexer::tokenise(lexeme.chars().collect());
 
     assert_that!(tokens).contains_exactly_in_order(vec![Token {
