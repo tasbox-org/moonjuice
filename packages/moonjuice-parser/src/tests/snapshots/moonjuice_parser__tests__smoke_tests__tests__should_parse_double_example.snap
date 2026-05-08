@@ -1,0 +1,117 @@
+---
+source: packages/moonjuice-parser/src/tests/smoke_tests.rs
+expression: "$crate ::\ntokenise_and_parse(indoc!\n{\"\n      def double = fn(value) value * 2 end\n\n      5 |> double |> print\n    \"}.chars().collect())"
+---
+- value:
+    Definition:
+      is_constant: true
+      is_export: false
+      lhs:
+        - value:
+            Symbol: double
+          start:
+            line: 1
+            column: 5
+          end:
+            line: 1
+            column: 11
+      rhs:
+        - value:
+            Function:
+              parameters:
+                - value:
+                    Symbol: value
+                  start:
+                    line: 1
+                    column: 17
+                  end:
+                    line: 1
+                    column: 22
+              body:
+                - value:
+                    Expression:
+                      BinaryOperator:
+                        op: Multiply
+                        lhs:
+                          value:
+                            Symbol: value
+                          start:
+                            line: 1
+                            column: 24
+                          end:
+                            line: 1
+                            column: 29
+                        rhs:
+                          value:
+                            Int: 2
+                          start:
+                            line: 1
+                            column: 32
+                          end:
+                            line: 1
+                            column: 33
+                  start:
+                    line: 1
+                    column: 30
+                  end:
+                    line: 1
+                    column: 31
+          start:
+            line: 1
+            column: 14
+          end:
+            line: 1
+            column: 37
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 37
+- value:
+    Expression:
+      BinaryOperator:
+        op: Pipe
+        lhs:
+          value:
+            BinaryOperator:
+              op: Pipe
+              lhs:
+                value:
+                  Int: 5
+                start:
+                  line: 3
+                  column: 1
+                end:
+                  line: 3
+                  column: 2
+              rhs:
+                value:
+                  Symbol: double
+                start:
+                  line: 3
+                  column: 6
+                end:
+                  line: 3
+                  column: 12
+          start:
+            line: 3
+            column: 3
+          end:
+            line: 3
+            column: 5
+        rhs:
+          value:
+            Symbol: print
+          start:
+            line: 3
+            column: 16
+          end:
+            line: 3
+            column: 21
+  start:
+    line: 3
+    column: 13
+  end:
+    line: 3
+    column: 15

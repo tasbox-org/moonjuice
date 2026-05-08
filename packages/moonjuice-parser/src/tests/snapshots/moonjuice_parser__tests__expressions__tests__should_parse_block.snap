@@ -1,0 +1,13 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate :: tokenise_and_parse(\"do end\".chars().collect())"
+---
+- value:
+    Expression:
+      Block: []
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 7

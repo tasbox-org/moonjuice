@@ -1,0 +1,40 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate :: tokenise_and_parse(\"a(1, 2)\".chars().collect())"
+---
+- value:
+    Expression:
+      Call:
+        is_optional: false
+        lhs:
+          value:
+            Symbol: a
+          start:
+            line: 1
+            column: 1
+          end:
+            line: 1
+            column: 2
+        arguments:
+          - value:
+              Int: 1
+            start:
+              line: 1
+              column: 3
+            end:
+              line: 1
+              column: 4
+          - value:
+              Int: 2
+            start:
+              line: 1
+              column: 6
+            end:
+              line: 1
+              column: 7
+  start:
+    line: 1
+    column: 2
+  end:
+    line: 1
+    column: 8

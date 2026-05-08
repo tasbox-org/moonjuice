@@ -1,0 +1,68 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate :: tokenise_and_parse(\"fn({ .a, .b }) end\".chars().collect())"
+---
+- value:
+    Expression:
+      Function:
+        parameters:
+          - value:
+              TableUnpack:
+                elements:
+                  - Valid:
+                      key:
+                        value:
+                          String:
+                            segments:
+                              - a
+                            arguments: []
+                        start:
+                          line: 1
+                          column: 6
+                        end:
+                          line: 1
+                          column: 8
+                      variable:
+                        value:
+                          Symbol: a
+                        start:
+                          line: 1
+                          column: 6
+                        end:
+                          line: 1
+                          column: 8
+                  - Valid:
+                      key:
+                        value:
+                          String:
+                            segments:
+                              - b
+                            arguments: []
+                        start:
+                          line: 1
+                          column: 10
+                        end:
+                          line: 1
+                          column: 12
+                      variable:
+                        value:
+                          Symbol: b
+                        start:
+                          line: 1
+                          column: 10
+                        end:
+                          line: 1
+                          column: 12
+            start:
+              line: 1
+              column: 4
+            end:
+              line: 1
+              column: 14
+        body: []
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 19

@@ -1,0 +1,45 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate ::\ntokenise_and_parse(\"if 1 then elseif 2 then elseif 3 then end\".chars().collect())"
+---
+- value:
+    Expression:
+      If:
+        if_branches:
+          - condition:
+              value:
+                Int: 1
+              start:
+                line: 1
+                column: 4
+              end:
+                line: 1
+                column: 5
+            body: []
+          - condition:
+              value:
+                Int: 2
+              start:
+                line: 1
+                column: 18
+              end:
+                line: 1
+                column: 19
+            body: []
+          - condition:
+              value:
+                Int: 3
+              start:
+                line: 1
+                column: 32
+              end:
+                line: 1
+                column: 33
+            body: []
+        else_branch: ~
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 42

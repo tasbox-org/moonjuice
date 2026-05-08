@@ -1,0 +1,41 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate :: tokenise_and_parse(\"for i in a do 1 end\".chars().collect())"
+---
+- value:
+    Expression:
+      For:
+        lhs:
+          - value:
+              Symbol: i
+            start:
+              line: 1
+              column: 5
+            end:
+              line: 1
+              column: 6
+        enumerable:
+          value:
+            Symbol: a
+          start:
+            line: 1
+            column: 10
+          end:
+            line: 1
+            column: 11
+        body:
+          - value:
+              Expression:
+                Int: 1
+            start:
+              line: 1
+              column: 15
+            end:
+              line: 1
+              column: 16
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 20

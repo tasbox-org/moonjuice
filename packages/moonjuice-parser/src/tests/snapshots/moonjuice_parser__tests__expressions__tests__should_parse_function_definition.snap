@@ -1,0 +1,15 @@
+---
+source: packages/moonjuice-parser/src/tests/expressions.rs
+expression: "$crate :: tokenise_and_parse(\"fn() end\".chars().collect())"
+---
+- value:
+    Expression:
+      Function:
+        parameters: []
+        body: []
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 9
