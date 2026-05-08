@@ -65,8 +65,6 @@ impl Lexer {
       '?' => {
         if self.source.is_match("??".chars()) {
           Some((OptionalCoalesce, 2))
-        } else if self.source.is_match("?.".chars()) {
-          Some((OptionalIndex, 2))
         } else {
           None
         }
@@ -105,7 +103,6 @@ mod tests {
   #[case(">=", GreaterThanOrEqual)]
   #[case("|>", Pipe)]
   #[case(".", Index)]
-  #[case("?.", OptionalIndex)]
   #[case("=", Assignment)]
   #[case("~", BitwiseNot)]
   #[case("&", BitwiseAnd)]

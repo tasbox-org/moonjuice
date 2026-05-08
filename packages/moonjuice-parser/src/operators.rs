@@ -89,7 +89,7 @@ pub fn get_operator_metadata(operator: Operator) -> OperatorMetadata {
       is_right_associative: false,
     },
 
-    Index | OptionalIndex => OperatorMetadata {
+    Index => OperatorMetadata {
       is_unary: false,
       precedence: 1000,
       is_right_associative: false,
