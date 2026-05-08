@@ -5,6 +5,8 @@ mod tests {
   snapshot!(should_parse_def, "def a = b");
   snapshot!(should_parse_mut, "mut a = b");
   snapshot!(should_parse_multiple_assignment, "def a, b = c, d");
+  snapshot!(should_parse_multiple_assignment_when_more_declarations, "def a, b = c");
+  snapshot!(should_parse_multiple_assignment_when_more_assignments, "def a = b, c");
 
   snapshot!(should_parse_empty_unpack, "def {} = a");
   snapshot!(should_parse_explicit_unpack, "def { [1] = b } = a");
