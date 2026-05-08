@@ -17,7 +17,10 @@ expression: "$crate :: tokenise_and_parse(\"a?.b\".chars().collect())"
             column: 2
         rhs:
           value:
-            Symbol: b
+            String:
+              segments:
+                - Valid: b
+              arguments: []
           start:
             line: 1
             column: 4

@@ -7,6 +7,7 @@ mod tests {
   snapshot!(should_parse_optional_call, "a?.()");
 
   snapshot!(should_parse_index, "a.b");
+  snapshot!(should_parse_chained_index, "a.b.c");
   snapshot!(should_parse_optional_index, "a?.b");
   snapshot!(should_parse_index_expression, "a[1]");
   snapshot!(should_parse_optional_index_expression, "a?.[1]");
