@@ -1,0 +1,52 @@
+---
+source: packages/moonjuice-parser/src/tests/maths.rs
+expression: "$crate :: tokenise_and_parse(\"not -1 + 2\".chars().collect())"
+---
+- value:
+    Expression:
+      BinaryOperator:
+        op: Add
+        lhs:
+          value:
+            UnaryOperator:
+              op: Not
+              rhs:
+                value:
+                  UnaryOperator:
+                    op: Subtract
+                    rhs:
+                      value:
+                        Int: 1
+                      start:
+                        line: 1
+                        column: 6
+                      end:
+                        line: 1
+                        column: 7
+                start:
+                  line: 1
+                  column: 5
+                end:
+                  line: 1
+                  column: 6
+          start:
+            line: 1
+            column: 1
+          end:
+            line: 1
+            column: 4
+        rhs:
+          value:
+            Int: 2
+          start:
+            line: 1
+            column: 10
+          end:
+            line: 1
+            column: 11
+  start:
+    line: 1
+    column: 8
+  end:
+    line: 1
+    column: 9
