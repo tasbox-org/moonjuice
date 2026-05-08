@@ -9,7 +9,8 @@ pub enum Statement {
   Definition {
     is_constant: bool,
     is_export: bool,
-    definitions: Vec<(LValueNode, ExpressionNode)>,
+    lhs: Vec<LValueNode>,
+    rhs: Vec<ExpressionNode>,
   },
   Return(ExpressionNode),
   Break,

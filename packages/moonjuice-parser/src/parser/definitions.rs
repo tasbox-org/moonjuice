@@ -3,14 +3,18 @@ use crate::nodes::statement::Statement::Definition;
 use crate::nodes::statement::{Statement, StatementNode};
 use moonjuice_common::Keyword::{Constant, Export, Mutable};
 use moonjuice_common::Operator::Assignment;
+use moonjuice_lexer::Token;
 use moonjuice_lexer::TokenValue::{Keyword, Operator};
 
 impl Parser {
   pub(super) fn parse_definition(&mut self) -> StatementNode {
     let start = self.get_start();
 
-    if let Some(keyword) = self.tokens.consume()
-      && matches!(keyword.value, Keyword(Constant | Mutable | Export))
+    if let Some(Token {
+      value: Keyword(keyword),
+      ..
+    }) = self.tokens.consume().cloned()
+      && matches!(keyword, Constant | Mutable | Export)
     {
       let lhs = self.consume_comma_separated(|p| p.parse_lvalue());
 
@@ -26,9 +30,10 @@ impl Parser {
 
       StatementNode {
         value: Definition {
-          is_constant: false,
-          is_export: false,
-          definitions: lhs.into_iter().zip(rhs).collect(),
+          is_constant: matches!(keyword, Constant | Export),
+          is_export: keyword == Export,
+          lhs,
+          rhs,
         }
         .into(),
         start,
