@@ -4,6 +4,7 @@ mod lvalues;
 mod primitives;
 mod scopes;
 mod statements;
+mod table_unpacks;
 
 use crate::{Error, LuauTranspiler};
 

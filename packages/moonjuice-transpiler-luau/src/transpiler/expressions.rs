@@ -187,9 +187,67 @@ impl LuauTranspiler {
 
   fn emit_pipe_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {}
 
-  fn emit_function(&mut self, parameters: Vec<LValueNode>, body: Vec<StatementNode>) -> Result<(), Error> {}
+  fn emit_function(&mut self, parameters: Vec<LValueNode>, body: Vec<StatementNode>) -> Result<(), Error> {
+    if !self.get_scope().is_in_expression {
+      return Ok(());
+    }
 
-  fn emit_if(&mut self, if_branches: Vec<IfBranch>, else_branch: Option<Vec<StatementNode>>) -> Result<(), Error> {}
+    self.source.push_str("function(");
+    self.push_lvalue_scope();
+
+    self.emit_comma_separated(parameters, Self::emit_lvalue)?;
+    let table_unpacks = std::mem::take(self.get_scope_mut().table_unpacks.as_mut());
+
+    self.pop_scope();
+    self.source.push_str(")\n");
+
+    self.emit_table_unpacks(table_unpacks)?;
+    self.emit_body(body, "return", "")?;
+
+    self.source.push_str("end");
+
+    Ok(())
+  }
+
+  fn emit_if(&mut self, if_branches: Vec<IfBranch>, else_branch: Option<Vec<StatementNode>>) -> Result<(), Error> {
+    let is_in_expression = self.get_scope().is_in_expression;
+    self.source.push_str("if (");
+
+    let last_branch = if_branches.len().checked_sub(1).unwrap_or(0);
+    for (index, branch) in if_branches.into_iter().enumerate() {
+      self.push_expression_scope();
+      self.emit_expression(branch.condition)?;
+      self.pop_scope();
+
+      self.source.push_str(") then\n");
+
+      if is_in_expression {
+        self.emit_block(branch.body)?;
+      } else {
+        self.emit_body(branch.body, "return", "")?;
+      }
+
+      if index < last_branch {
+        self.source.push_str("elseif (");
+      }
+    }
+
+    if let Some(branch) = else_branch {
+      self.source.push_str("else\n");
+
+      if is_in_expression {
+        self.emit_block(branch)?;
+      } else {
+        self.emit_body(branch, "return", "")?;
+      }
+    } else if is_in_expression {
+      self.source.push_str("else nil\n");
+    }
+
+    self.source.push_str("end\n");
+
+    Ok(())
+  }
 
   fn emit_for(
     &mut self,

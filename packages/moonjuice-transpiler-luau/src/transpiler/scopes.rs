@@ -5,6 +5,10 @@ impl LuauTranspiler {
     self.scopes.last().unwrap()
   }
 
+  pub(crate) fn get_scope_mut(&mut self) -> &mut Scope {
+    self.scopes.last_mut().unwrap()
+  }
+
   pub(crate) fn push_expression_scope(&mut self) {
     let current_scope = self.get_scope();
 

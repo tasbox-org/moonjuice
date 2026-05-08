@@ -16,7 +16,7 @@ impl LuauTranspiler {
     if is_in_expression {
       self.source.push_str("end)()");
     } else {
-      self.source.push_str("end");
+      self.source.push_str("end\n");
     }
 
     Ok(())
