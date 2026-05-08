@@ -2,7 +2,7 @@ use crate::Parser;
 use crate::nodes::expression::Expression::SyntaxError;
 use crate::nodes::expression::{Expression, ExpressionNode};
 use moonjuice_common::Keyword::{Do, End, For, Function, If};
-use moonjuice_common::SpecialCharacter::{OpenBracket, OpenCurlyBracket};
+use moonjuice_common::SpecialCharacter::{CloseBracket, OpenBracket, OpenCurlyBracket};
 use moonjuice_lexer::TokenValue::{
   Bool, Comment, Double, Int, Keyword, MalformedNumber, MalformedString, Nil, Operator, SpecialCharacter, String,
   Symbol, UnexpectedCharacter,
@@ -18,7 +18,7 @@ impl Parser {
         self.tokens.consume();
         let inner = self.parse_expression();
 
-        if self.consume_if(SpecialCharacter(OpenCurlyBracket)).is_some() {
+        if self.consume_if(SpecialCharacter(CloseBracket)).is_some() {
           inner
         } else {
           ExpressionNode {
