@@ -14,7 +14,7 @@ expression: "$crate :: tokenise_and_parse(\"fn({ .a, .b }) end\".chars().collect
                         value:
                           String:
                             segments:
-                              - a
+                              - Valid: a
                             arguments: []
                         start:
                           line: 1
@@ -36,7 +36,7 @@ expression: "$crate :: tokenise_and_parse(\"fn({ .a, .b }) end\".chars().collect
                         value:
                           String:
                             segments:
-                              - b
+                              - Valid: b
                             arguments: []
                         start:
                           line: 1

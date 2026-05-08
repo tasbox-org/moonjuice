@@ -1,5 +1,5 @@
 use crate::Parser;
-use crate::nodes::expression::{Expression, ExpressionNode};
+use crate::nodes::expression::{Expression, ExpressionNode, StringSegment};
 use crate::nodes::lvalue::LValue::{SyntaxError, TableUnpack};
 use crate::nodes::lvalue::{LValue, LValueNode, TableUnpackElement};
 use moonjuice_common::Operator::{Assignment, Index};
@@ -61,7 +61,7 @@ impl Parser {
         {
           let key = ExpressionNode {
             value: Expression::String {
-              segments: vec![symbol.clone()],
+              segments: vec![StringSegment::Valid(symbol.clone())],
               arguments: vec![],
             }
             .into(),

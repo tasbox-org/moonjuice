@@ -17,13 +17,19 @@ pub struct IfBranch {
 }
 
 #[derive(Serialize)]
+pub enum StringSegment {
+  Valid(String),
+  Malformed(String),
+}
+
+#[derive(Serialize)]
 pub enum Expression {
   Nil,
   Bool(bool),
   Int(i64),
   Double(f64),
   String {
-    segments: Vec<String>,
+    segments: Vec<StringSegment>,
     arguments: Vec<ExpressionNode>,
   },
   TableDefinition {

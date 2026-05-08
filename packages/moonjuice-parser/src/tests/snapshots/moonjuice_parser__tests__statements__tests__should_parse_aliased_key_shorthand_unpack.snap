@@ -15,7 +15,7 @@ expression: "$crate :: tokenise_and_parse(\"def { .b = c } = a\".chars().collect
                       value:
                         String:
                           segments:
-                            - b
+                            - Valid: b
                           arguments: []
                       start:
                         line: 1

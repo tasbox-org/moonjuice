@@ -6,7 +6,7 @@ expression: "$crate :: tokenise_and_parse(\"'contents'\".chars().collect())"
     Expression:
       String:
         segments:
-          - contents
+          - Valid: contents
         arguments: []
   start:
     line: 1
