@@ -12,7 +12,7 @@ impl Parser {
   pub(super) fn parse_operand(&mut self) -> ExpressionNode {
     let start = self.get_start();
 
-    match self.tokens.peek_next().map(|token| token.value) {
+    match self.tokens.peek_next().map(|token| token.value.clone()) {
       Some(Operator(_)) => self.parse_unary_operator(),
       Some(SpecialCharacter(OpenBracket)) => {
         self.tokens.consume();

@@ -3,12 +3,16 @@ mod breaks;
 mod definitions;
 mod expressions;
 mod for_loops;
+mod function_calls;
 mod functions;
 mod if_statements;
+mod index_expressions;
 mod lvalues;
 mod operands;
 mod returns;
+mod strings;
 mod table_definitions;
+mod table_unpacks;
 mod unary_operators;
 
 use crate::Parser;

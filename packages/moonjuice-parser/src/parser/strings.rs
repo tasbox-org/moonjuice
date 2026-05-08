@@ -2,5 +2,5 @@ use crate::Parser;
 use crate::nodes::expression::ExpressionNode;
 
 impl Parser {
-  pub(super) fn parse_table_definition(&mut self) -> ExpressionNode {}
+  pub(super) fn parse_string(&mut self) -> ExpressionNode {}
 }
