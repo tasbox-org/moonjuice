@@ -1,5 +1,5 @@
 use crate::{Error, LuauTranspiler};
-use moonjuice_common::Operator;
+use moonjuice_common::{Operator, Position};
 use moonjuice_parser::nodes::expression::{Expression, ExpressionNode, IfBranch, TableDefinitionElement};
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
@@ -11,8 +11,12 @@ impl LuauTranspiler {
       Expression::Bool(value) => self.emit_bool(value),
       Expression::Int(value) => self.emit_int(value),
       Expression::Double(value) => self.emit_double(value),
-      Expression::String { segments, arguments } => self.emit_string(segments, arguments)?,
-      Expression::TableDefinition { elements } => self.emit_table_definition(elements)?,
+      Expression::String { segments, arguments } => {
+        self.emit_string(segments, arguments, expression.start, expression.end)?
+      }
+      Expression::TableDefinition { elements } => {
+        self.emit_table_definition(elements, expression.start, expression.end)?
+      }
       Expression::Symbol(value) => self.emit_symbol(value.as_str()),
       Expression::Block(body) => self.emit_block(body)?,
       Expression::UnaryOperator { op, rhs } => self.emit_unary_operator(op, rhs)?,
@@ -40,7 +44,38 @@ impl LuauTranspiler {
     Ok(())
   }
 
-  fn emit_table_definition(&mut self, elements: Vec<TableDefinitionElement>) -> Result<(), Error> {}
+  fn emit_table_definition(
+    &mut self,
+    elements: Vec<TableDefinitionElement>,
+    start: Position,
+    end: Position,
+  ) -> Result<(), Error> {
+    if !self.get_scope().is_in_expression {
+      self.source.push_str("local _ = ");
+    }
+
+    self.push_expression_scope();
+    self.source.push_str("{ ");
+
+    self.emit_comma_separated(elements, |t, element| match element {
+      TableDefinitionElement::Valid { key, value } => {
+        t.source.push('[');
+        t.emit_expression(key)?;
+        t.source.push_str("] = ");
+        t.emit_expression(value)
+      }
+      TableDefinitionElement::SyntaxError(message) => Err(Error {
+        message,
+        start: start.clone(),
+        end: end.clone(),
+      }),
+    })?;
+
+    self.source.push_str(" }");
+    self.pop_scope();
+
+    Ok(())
+  }
 
   fn emit_unary_operator(&mut self, op: Operator, rhs: ExpressionNode) -> Result<(), Error> {}
 
