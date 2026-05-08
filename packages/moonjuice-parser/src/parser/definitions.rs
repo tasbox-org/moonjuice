@@ -1,6 +1,4 @@
 use crate::Parser;
-use crate::nodes::expression::{Expression, ExpressionNode};
-use crate::nodes::lvalue::{LValue, LValueNode};
 use crate::nodes::statement::Statement::Definition;
 use crate::nodes::statement::{Statement, StatementNode};
 use moonjuice_common::Keyword::{Constant, Export, Mutable};
@@ -14,8 +12,7 @@ impl Parser {
     if let Some(keyword) = self.tokens.consume()
       && matches!(keyword.value, Keyword(Constant | Mutable | Export))
     {
-      let mut lhs = self.consume_comma_separated(|p| p.parse_lvalue());
-      let lhs_end = self.get_end();
+      let lhs = self.consume_comma_separated(|p| p.parse_lvalue());
 
       if self.consume_if(|value| value == Operator(Assignment)).is_none() {
         return StatementNode {
@@ -25,28 +22,7 @@ impl Parser {
         };
       }
 
-      let mut rhs = self.consume_comma_separated(|p| p.parse_expression());
-      let rhs_end = self.get_end();
-
-      while lhs.len() < rhs.len() {
-        lhs.push(LValueNode {
-          value: LValue::SyntaxError("Expected variable or table unpack to match number of assignments".to_string())
-            .into(),
-          start: lhs_end.clone(),
-          end: lhs_end.clone(),
-        });
-      }
-
-      while rhs.len() < lhs.len() {
-        rhs.push(ExpressionNode {
-          value: Expression::SyntaxError(
-            "Expected assignment to match number of variables or table unpacks".to_string(),
-          )
-          .into(),
-          start: rhs_end.clone(),
-          end: rhs_end.clone(),
-        });
-      }
+      let rhs = self.consume_comma_separated(|p| p.parse_expression());
 
       StatementNode {
         value: Definition {
@@ -56,7 +32,7 @@ impl Parser {
         }
         .into(),
         start,
-        end: rhs_end,
+        end: self.get_end(),
       }
     } else {
       StatementNode {
