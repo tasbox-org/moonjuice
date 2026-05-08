@@ -22,8 +22,9 @@ mod tests {
     "fn({ .a, .b }) end"
   );
 
-  snapshot!(should_parse_for_loop, "for k, v in a do end");
-  snapshot!(should_parse_for_loop_with_body, "for k, v in a do 1 end");
+  snapshot!(should_parse_for_loop, "for i in a do end");
+  snapshot!(should_parse_for_loop_with_multiple_return, "for k, v in a do end");
+  snapshot!(should_parse_for_loop_with_body, "for i in a do 1 end");
   snapshot!(
     should_parse_for_loop_with_table_unpack_iterator,
     "for { a, b } in a do end"
