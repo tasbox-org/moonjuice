@@ -1,5 +1,7 @@
-use moonjuice_common::Operator;
 use moonjuice_common::Operator::*;
+use moonjuice_common::SpecialCharacter::{OpenBracket, OpenSquareBracket};
+use moonjuice_lexer::Token;
+use moonjuice_lexer::TokenValue::{Operator, SpecialCharacter};
 
 pub struct OperatorMetadata {
   pub is_unary: bool,
@@ -7,92 +9,94 @@ pub struct OperatorMetadata {
   pub is_right_associative: bool,
 }
 
-pub fn get_operator_metadata(operator: Operator) -> OperatorMetadata {
-  match operator {
-    Assignment => OperatorMetadata {
+pub fn get_operator_metadata(token: Token) -> Option<OperatorMetadata> {
+  match token.value {
+    Operator(Assignment) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 0,
       is_right_associative: true,
-    },
+    }),
 
-    OptionalCoalesce => OperatorMetadata {
+    Operator(OptionalCoalesce) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 10,
       is_right_associative: true,
-    },
+    }),
 
-    Or => OperatorMetadata {
+    Operator(Or) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 20,
       is_right_associative: false,
-    },
-    And => OperatorMetadata {
+    }),
+    Operator(And) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 21,
       is_right_associative: false,
-    },
+    }),
 
-    BitwiseOr => OperatorMetadata {
+    Operator(BitwiseOr) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 30,
       is_right_associative: false,
-    },
-    BitwiseXor => OperatorMetadata {
+    }),
+    Operator(BitwiseXor) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 31,
       is_right_associative: false,
-    },
-    BitwiseAnd => OperatorMetadata {
+    }),
+    Operator(BitwiseAnd) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 32,
       is_right_associative: false,
-    },
+    }),
 
-    Equals | NotEquals => OperatorMetadata {
+    Operator(Equals | NotEquals) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 40,
       is_right_associative: false,
-    },
+    }),
 
-    LessThan | GreaterThan | LessThanOrEqual | GreaterThanOrEqual => OperatorMetadata {
+    Operator(LessThan | GreaterThan | LessThanOrEqual | GreaterThanOrEqual) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 50,
       is_right_associative: false,
-    },
+    }),
 
-    Pipe => OperatorMetadata {
+    Operator(Pipe) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 60,
       is_right_associative: false,
-    },
+    }),
 
-    LeftShift | RightShift => OperatorMetadata {
+    Operator(LeftShift | RightShift) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 70,
       is_right_associative: false,
-    },
+    }),
 
-    Add | Subtract | Concat => OperatorMetadata {
+    Operator(Add | Subtract | Concat) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 80,
       is_right_associative: false,
-    },
-    Multiply | Divide | Modulo => OperatorMetadata {
+    }),
+    Operator(Multiply | Divide | Modulo) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 81,
       is_right_associative: false,
-    },
+    }),
 
-    Not | BitwiseNot | Length => OperatorMetadata {
+    Operator(Not | BitwiseNot | Length) => Some(OperatorMetadata {
       is_unary: true,
       precedence: 500,
       is_right_associative: false,
-    },
+    }),
 
-    Index | OptionalIndex => OperatorMetadata {
+    Operator(Index | OptionalIndex) | SpecialCharacter(OpenBracket | OpenSquareBracket) => Some(OperatorMetadata {
       is_unary: false,
       precedence: 1000,
       is_right_associative: false,
-    },
+    }),
+
+    _ => None,
   }
 }

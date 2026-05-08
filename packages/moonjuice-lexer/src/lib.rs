@@ -29,7 +29,7 @@ pub enum TokenValue {
   MalformedString(StringTokenType, String),
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct Token {
   pub value: TokenValue,
   pub lexeme: String,

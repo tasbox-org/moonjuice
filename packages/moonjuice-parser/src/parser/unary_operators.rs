@@ -8,12 +8,12 @@ use moonjuice_lexer::TokenValue::Operator;
 impl Parser {
   pub(super) fn parse_unary_operator(&mut self) -> ExpressionNode {
     let start = self.get_start();
-    let token = self.tokens.consume();
+    let token = self.tokens.consume().cloned();
     let end = self.get_end();
 
     if let Some(token) = token
-      && let Operator(op) = token.value
-      && let metadata = get_operator_metadata(op.clone())
+      && let Operator(op) = token.value.clone()
+      && let Some(metadata) = get_operator_metadata(token)
       && (metadata.is_unary || op == Subtract)
     {
       let sub_expression_lhs = self.parse_operand();
