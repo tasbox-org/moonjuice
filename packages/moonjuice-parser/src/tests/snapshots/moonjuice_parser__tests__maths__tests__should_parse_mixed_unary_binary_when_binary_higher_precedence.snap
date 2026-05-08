@@ -1,0 +1,42 @@
+---
+source: packages/moonjuice-parser/src/tests/maths.rs
+expression: "$crate :: tokenise_and_parse(\"-a.b\".chars().collect())"
+---
+- value:
+    Expression:
+      UnaryOperator:
+        op: Subtract
+        rhs:
+          value:
+            BinaryOperator:
+              op: Index
+              lhs:
+                value:
+                  Symbol: a
+                start:
+                  line: 1
+                  column: 2
+                end:
+                  line: 1
+                  column: 3
+              rhs:
+                value:
+                  Symbol: b
+                start:
+                  line: 1
+                  column: 4
+                end:
+                  line: 1
+                  column: 5
+          start:
+            line: 1
+            column: 3
+          end:
+            line: 1
+            column: 4
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 2
