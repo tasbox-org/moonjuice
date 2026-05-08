@@ -59,7 +59,7 @@ impl Parser {
           }
         }
       }
-      Some(Keyword(Function)) => self.parse_function(),
+      Some(Keyword(Function)) => self.parse_function_definition(),
       Some(Keyword(If)) => self.parse_if(),
       Some(Keyword(For)) => self.parse_for(),
       Some(Keyword(_)) => {
