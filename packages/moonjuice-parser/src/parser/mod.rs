@@ -5,7 +5,7 @@ mod expressions;
 mod for_loops;
 mod function_calls;
 mod function_definitions;
-mod if_statements;
+mod if_expressions;
 mod index_expressions;
 mod lvalues;
 mod operands;
