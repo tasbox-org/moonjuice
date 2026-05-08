@@ -6,6 +6,10 @@ use moonjuice_common::Operator::{Assignment, Index};
 use moonjuice_lexer::TokenValue::Operator;
 
 fn is_right_hand_side_chained_operator(metadata: &OperatorMetadata, previous_precedence: u16) -> bool {
+  if metadata.is_unary {
+    return false;
+  }
+
   if metadata.is_right_associative {
     metadata.precedence >= previous_precedence
   } else {
