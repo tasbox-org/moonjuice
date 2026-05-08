@@ -41,19 +41,23 @@ impl LuauTranspiler {
     start: Position,
     end: Position,
   ) -> Result<(), Error> {
-    if arguments.is_empty() && !self.get_scope().is_in_expression {
-      return Ok(());
+    if !self.get_scope().is_in_expression {
+      if arguments.is_empty() {
+        return Ok(());
+      } else {
+        self.source.push_str("local _ = ");
+      }
     }
 
     let mut arguments = arguments.into_iter();
     let last_segment = segments.len().checked_sub(1).unwrap_or(0);
 
-    self.source.push('(');
+    self.push_expression_scope();
+    self.source.push('`');
 
     for (index, segment) in segments.into_iter().enumerate() {
       match segment {
         StringSegment::Valid(value) => {
-          self.source.push('"');
           self.source.push_str(
             value
               .replace('\\', "\\\\")
@@ -61,10 +65,10 @@ impl LuauTranspiler {
               .replace('\n', "\\n")
               .replace('\t', "\\t")
               .replace('\0', "\\0")
-              .replace("\"", "\\\"")
+              .replace('`', "\\`")
+              .replace('{', "\\{")
               .as_str(),
           );
-          self.source.push('"');
         }
         StringSegment::Malformed(message) => return Err(Error { message, start, end }),
       }
@@ -72,13 +76,14 @@ impl LuauTranspiler {
       if index < last_segment
         && let Some(argument) = arguments.next()
       {
-        self.source.push_str(" .. tostring(");
+        self.source.push('{');
         self.emit_expression(argument)?;
-        self.source.push_str(") .. ");
+        self.source.push('}');
       }
     }
 
-    self.source.push(')');
+    self.source.push('`');
+    self.pop_scope();
 
     Ok(())
   }
