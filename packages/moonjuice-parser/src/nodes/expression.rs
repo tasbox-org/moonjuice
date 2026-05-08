@@ -2,17 +2,21 @@ use crate::nodes::Node;
 use crate::nodes::lvalue::LValueNode;
 use crate::nodes::statement::StatementNode;
 use moonjuice_common::{Operator, Position};
+use serde::Serialize;
 
+#[derive(Serialize)]
 pub enum TableDefinitionElement {
   Valid { key: ExpressionNode, value: ExpressionNode },
   SyntaxError(String),
 }
 
+#[derive(Serialize)]
 pub struct IfBranch {
   pub condition: ExpressionNode,
   pub body: Vec<StatementNode>,
 }
 
+#[derive(Serialize)]
 pub enum Expression {
   Nil,
   Bool(bool),
@@ -57,6 +61,7 @@ pub enum Expression {
   SyntaxError(String),
 }
 
+#[derive(Serialize)]
 pub struct ExpressionNode {
   pub value: Box<Expression>,
   pub start: Position,

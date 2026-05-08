@@ -1,12 +1,14 @@
+use serde::Serialize;
+
 pub mod peekable_stream;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Position {
   pub line: usize,
   pub column: usize,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum Keyword {
   Break,
   Continue,
@@ -30,7 +32,7 @@ pub enum Keyword {
   Export,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum SpecialCharacter {
   OpenBracket,
   CloseBracket,
@@ -45,7 +47,7 @@ pub enum SpecialCharacter {
   Colon,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum Operator {
   Add,
   Subtract,

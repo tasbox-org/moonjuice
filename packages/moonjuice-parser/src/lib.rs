@@ -1,4 +1,3 @@
-use crate::nodes::expression::ExpressionNode;
 use crate::nodes::statement::StatementNode;
 use moonjuice_common::peekable_stream::PeekableStream;
 use moonjuice_lexer::{Lexer, Token};
@@ -6,6 +5,7 @@ use moonjuice_lexer::{Lexer, Token};
 pub mod nodes;
 mod operators;
 pub mod parser;
+mod tests;
 
 pub struct Parser {
   tokens: PeekableStream<Token>,

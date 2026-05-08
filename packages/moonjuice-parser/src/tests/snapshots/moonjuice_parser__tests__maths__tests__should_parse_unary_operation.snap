@@ -1,0 +1,23 @@
+---
+source: packages/moonjuice-parser/src/tests/maths.rs
+expression: "tokenise_and_parse(\"-5\".chars().collect())"
+---
+- value:
+    Expression:
+      UnaryOperator:
+        op: Subtract
+        rhs:
+          value:
+            Int: 5
+          start:
+            line: 1
+            column: 2
+          end:
+            line: 1
+            column: 3
+  start:
+    line: 1
+    column: 1
+  end:
+    line: 1
+    column: 2

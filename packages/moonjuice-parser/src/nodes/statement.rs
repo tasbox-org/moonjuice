@@ -2,7 +2,9 @@ use crate::nodes::Node;
 use crate::nodes::expression::{Expression, ExpressionNode};
 use crate::nodes::lvalue::LValueNode;
 use moonjuice_common::Position;
+use serde::Serialize;
 
+#[derive(Serialize)]
 pub enum Statement {
   Definition {
     is_constant: bool,
@@ -15,6 +17,7 @@ pub enum Statement {
   SyntaxError(String),
 }
 
+#[derive(Serialize)]
 pub struct StatementNode {
   pub value: Box<Statement>,
   pub start: Position,
