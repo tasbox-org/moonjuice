@@ -43,8 +43,6 @@ pub enum SpecialCharacter {
 
   Comma,
   Colon,
-
-  OptionalChain,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -68,6 +66,7 @@ pub enum Operator {
   GreaterThanOrEqual,
   Pipe,
   Index,
+  OptionalIndex,
   Assignment,
   BitwiseNot,
   BitwiseAnd,
