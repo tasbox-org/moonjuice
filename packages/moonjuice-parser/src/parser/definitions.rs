@@ -5,8 +5,7 @@ use crate::nodes::statement::Statement::Definition;
 use crate::nodes::statement::{Statement, StatementNode};
 use moonjuice_common::Keyword::{Constant, Export, Mutable};
 use moonjuice_common::Operator::Assignment;
-use moonjuice_common::SpecialCharacter::Comma;
-use moonjuice_lexer::TokenValue::{Keyword, Operator, SpecialCharacter};
+use moonjuice_lexer::TokenValue::{Keyword, Operator};
 
 impl Parser {
   pub(super) fn parse_definition(&mut self) -> StatementNode {
@@ -15,15 +14,7 @@ impl Parser {
     if let Some(keyword) = self.tokens.consume()
       && matches!(keyword.value, Keyword(Constant | Mutable | Export))
     {
-      let mut lhs: Vec<LValueNode> = vec![];
-      loop {
-        lhs.push(self.parse_lvalue());
-
-        if self.consume_if(|value| value == SpecialCharacter(Comma)).is_none() {
-          break;
-        }
-      }
-
+      let mut lhs = self.consume_comma_separated(|p| p.parse_lvalue());
       let lhs_end = self.get_end();
 
       if self.consume_if(|value| value == Operator(Assignment)).is_none() {
@@ -34,15 +25,7 @@ impl Parser {
         };
       }
 
-      let mut rhs: Vec<ExpressionNode> = vec![];
-      loop {
-        rhs.push(self.parse_expression());
-
-        if self.consume_if(|value| value == SpecialCharacter(Comma)).is_none() {
-          break;
-        }
-      }
-
+      let mut rhs = self.consume_comma_separated(|p| p.parse_expression());
       let rhs_end = self.get_end();
 
       while lhs.len() < rhs.len() {

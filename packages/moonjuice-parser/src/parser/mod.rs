@@ -21,8 +21,9 @@ use crate::nodes::expression::ExpressionNode;
 use crate::nodes::statement::{Statement, StatementNode};
 use moonjuice_common::Keyword::{Break, Constant, Export, Mutable, Return};
 use moonjuice_common::Position;
+use moonjuice_common::SpecialCharacter::Comma;
 use moonjuice_common::peekable_stream::PeekableStream;
-use moonjuice_lexer::TokenValue::Keyword;
+use moonjuice_lexer::TokenValue::{Keyword, SpecialCharacter};
 use moonjuice_lexer::{Token, TokenValue};
 
 impl Parser {
@@ -97,5 +98,17 @@ impl Parser {
       .peek_back(1)
       .map(|token| token.end.clone())
       .unwrap_or(Position { line: 1, column: 1 })
+  }
+
+  fn consume_comma_separated<T>(&mut self, for_each: impl Fn(&mut Self) -> T) -> Vec<T> {
+    let mut elements: Vec<T> = vec![];
+
+    loop {
+      elements.push(for_each(self));
+
+      if self.consume_if(|value| value == SpecialCharacter(Comma)).is_none() {
+        break elements;
+      }
+    }
   }
 }
