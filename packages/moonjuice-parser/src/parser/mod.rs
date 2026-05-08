@@ -38,9 +38,8 @@ impl Parser {
     }
   }
 
-  pub(crate) fn parse_block(&mut self, has_remaining: impl Fn(&Self) -> bool) -> ExpressionNode {
+  pub(crate) fn parse_block(&mut self, has_remaining: impl Fn(&Self) -> bool) -> Vec<StatementNode> {
     let mut block: Vec<StatementNode> = vec![];
-    let start = self.get_start();
 
     while has_remaining(self) {
       let node = if self.is_next(Keyword(Constant)) || self.is_next(Keyword(Mutable)) || self.is_next(Keyword(Export)) {
@@ -63,11 +62,7 @@ impl Parser {
       block.push(node);
     }
 
-    ExpressionNode {
-      value: Block(block).into(),
-      start,
-      end: self.get_end(),
-    }
+    block
   }
 
   fn is_next(&self, value: TokenValue) -> bool {

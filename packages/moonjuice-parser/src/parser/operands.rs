@@ -43,10 +43,14 @@ impl Parser {
       }
       Some(Keyword(Do)) => {
         self.tokens.consume();
-        let block = self.parse_block(|p| p.tokens.peek_next().is_some_and(|token| token.value == Keyword(End)));
+        let body = self.parse_block(|p| p.tokens.has_next() && !p.is_next(Keyword(End)));
 
         if self.consume_if(|value| value == Keyword(End)).is_some() {
-          block
+          ExpressionNode {
+            value: Expression::Block(body).into(),
+            start,
+            end: self.get_end(),
+          }
         } else {
           ExpressionNode {
             value: SyntaxError("Expected 'end' to close 'do' block".to_string()).into(),
