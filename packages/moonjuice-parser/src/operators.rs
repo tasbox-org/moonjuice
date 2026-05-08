@@ -3,6 +3,8 @@ use moonjuice_common::SpecialCharacter::{OpenBracket, OpenSquareBracket};
 use moonjuice_lexer::Token;
 use moonjuice_lexer::TokenValue::{Operator, SpecialCharacter};
 
+pub static UNARY_PRECEDENCE: u16 = 500;
+
 pub struct OperatorMetadata {
   pub is_unary: bool,
   pub precedence: u16,
@@ -87,7 +89,7 @@ pub fn get_operator_metadata(token: Token) -> Option<OperatorMetadata> {
 
     Operator(Not | BitwiseNot | Length) => Some(OperatorMetadata {
       is_unary: true,
-      precedence: 500,
+      precedence: UNARY_PRECEDENCE,
       is_right_associative: false,
     }),
 
