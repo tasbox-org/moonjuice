@@ -2,9 +2,9 @@ use crate::nodes::Node;
 use crate::nodes::expression::ExpressionNode;
 use moonjuice_common::Position;
 
-pub struct TableUnpackElement {
-  pub key: ExpressionNode,
-  pub variable: LValueNode,
+pub enum TableUnpackElement {
+  Valid { key: ExpressionNode, variable: LValueNode },
+  SyntaxError(String),
 }
 
 pub enum LValue {

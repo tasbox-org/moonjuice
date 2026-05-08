@@ -23,10 +23,7 @@ impl Parser {
 
     let rhs = self.parse_expression();
 
-    if self
-      .consume_if(|value| value == SpecialCharacter(CloseSquareBracket))
-      .is_none()
-    {
+    if self.consume_if(SpecialCharacter(CloseSquareBracket)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected ']' to close table index".to_string()).into(),
         start,

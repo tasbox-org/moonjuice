@@ -22,7 +22,7 @@ impl Parser {
     loop {
       let condition = self.parse_expression();
 
-      if self.consume_if(|value| value == Keyword(Then)).is_none() {
+      if self.consume_if(Keyword(Then)).is_none() {
         return ExpressionNode {
           value: SyntaxError("Expected 'then' after condition".to_string()).into(),
           start,
@@ -56,18 +56,18 @@ impl Parser {
 
       if_branches.push(IfBranch { condition, body });
 
-      if self.consume_if(|value| value == Keyword(ElseIf)).is_none() {
+      if self.consume_if(Keyword(ElseIf)).is_none() {
         break;
       }
     }
 
-    let else_branch = if self.consume_if(|value| value == Keyword(Else)).is_some() {
+    let else_branch = if self.consume_if(Keyword(Else)).is_some() {
       Some(self.parse_block(|p| p.tokens.has_next() && !p.is_next(Keyword(End))))
     } else {
       None
     };
 
-    if self.consume_if(|value| value == Keyword(End)).is_none() {
+    if self.consume_if(Keyword(End)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected 'end' to close if expression".to_string()).into(),
         start,

@@ -16,8 +16,6 @@ mod table_unpacks;
 mod unary_operators;
 
 use crate::Parser;
-use crate::nodes::expression::Expression::Block;
-use crate::nodes::expression::ExpressionNode;
 use crate::nodes::statement::{Statement, StatementNode};
 use moonjuice_common::Keyword::{Break, Constant, Export, Mutable, Return};
 use moonjuice_common::Position;
@@ -74,8 +72,8 @@ impl Parser {
     }
   }
 
-  fn consume_if(&mut self, predicate: impl Fn(TokenValue) -> bool) -> Option<&Token> {
-    self.tokens.consume_if(|token| predicate(token.value.clone()))
+  fn consume_if(&mut self, value: TokenValue) -> Option<&Token> {
+    self.tokens.consume_if(|token| token.value == value)
   }
 
   fn get_start(&self) -> Position {
@@ -101,7 +99,23 @@ impl Parser {
     loop {
       elements.push(for_each(self));
 
-      if self.consume_if(|value| value == SpecialCharacter(Comma)).is_none() {
+      if self.consume_if(SpecialCharacter(Comma)).is_none() {
+        break elements;
+      }
+    }
+  }
+
+  fn consume_trailing_comma_separated<T>(&mut self, stop_on: TokenValue, for_each: impl Fn(&mut Self) -> T) -> Vec<T> {
+    let mut elements: Vec<T> = vec![];
+
+    loop {
+      if self.is_next(stop_on.clone()) {
+        break elements;
+      }
+
+      elements.push(for_each(self));
+
+      if self.consume_if(SpecialCharacter(Comma)).is_none() {
         break elements;
       }
     }

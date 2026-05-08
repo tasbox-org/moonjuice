@@ -18,7 +18,7 @@ impl Parser {
 
     let lhs = self.consume_comma_separated(|p| p.parse_lvalue());
 
-    if self.consume_if(|value| value == Keyword(In)).is_none() {
+    if self.consume_if(Keyword(In)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected 'in' keyword to follow for loop variable declarations".to_string()).into(),
         start,
@@ -28,7 +28,7 @@ impl Parser {
 
     let enumerable = self.parse_expression();
 
-    if self.consume_if(|value| value == Keyword(Do)).is_none() {
+    if self.consume_if(Keyword(Do)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected 'do' keyword to follow for loop enumerable".to_string()).into(),
         start,
@@ -38,7 +38,7 @@ impl Parser {
 
     let body = self.parse_block(|p| p.tokens.has_next() && !p.is_next(Keyword(End)));
 
-    if self.consume_if(|value| value == Keyword(End)).is_none() {
+    if self.consume_if(Keyword(End)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected 'end' keyword to close for loop body".to_string()).into(),
         start,

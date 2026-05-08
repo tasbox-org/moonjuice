@@ -18,10 +18,7 @@ impl Parser {
         self.tokens.consume();
         let inner = self.parse_expression();
 
-        if self
-          .consume_if(|value| value == SpecialCharacter(OpenCurlyBracket))
-          .is_some()
-        {
+        if self.consume_if(SpecialCharacter(OpenCurlyBracket)).is_some() {
           inner
         } else {
           ExpressionNode {
@@ -45,7 +42,7 @@ impl Parser {
         self.tokens.consume();
         let body = self.parse_block(|p| p.tokens.has_next() && !p.is_next(Keyword(End)));
 
-        if self.consume_if(|value| value == Keyword(End)).is_some() {
+        if self.consume_if(Keyword(End)).is_some() {
           ExpressionNode {
             value: Expression::Block(body).into(),
             start,

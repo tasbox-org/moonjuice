@@ -21,10 +21,7 @@ impl Parser {
       };
     }
 
-    if self
-      .consume_if(|value| value == SpecialCharacter(OpenBracket))
-      .is_none()
-    {
+    if self.consume_if(SpecialCharacter(OpenBracket)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected '(' to open function parameter list".to_string()).into(),
         start,
@@ -38,10 +35,7 @@ impl Parser {
       self.consume_comma_separated(|p| p.parse_lvalue())
     };
 
-    if self
-      .consume_if(|value| value == SpecialCharacter(CloseBracket))
-      .is_none()
-    {
+    if self.consume_if(SpecialCharacter(CloseBracket)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected ')' to close function parameter list".to_string()).into(),
         start,
@@ -51,7 +45,7 @@ impl Parser {
 
     let body = self.parse_block(|p| p.tokens.has_next() && !p.is_next(Keyword(End)));
 
-    if self.consume_if(|value| value == Keyword(End)).is_none() {
+    if self.consume_if(Keyword(End)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected 'end' keyword to close function body".to_string()).into(),
         start,

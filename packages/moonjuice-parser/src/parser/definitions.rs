@@ -14,7 +14,7 @@ impl Parser {
     {
       let lhs = self.consume_comma_separated(|p| p.parse_lvalue());
 
-      if self.consume_if(|value| value == Operator(Assignment)).is_none() {
+      if self.consume_if(Operator(Assignment)).is_none() {
         return StatementNode {
           value: Statement::SyntaxError("Expected '=' following definition".to_string()).into(),
           start,

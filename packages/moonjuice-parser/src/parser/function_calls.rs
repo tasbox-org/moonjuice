@@ -26,10 +26,7 @@ impl Parser {
       self.consume_comma_separated(|p| p.parse_expression())
     };
 
-    if self
-      .consume_if(|value| value == SpecialCharacter(CloseBracket))
-      .is_none()
-    {
+    if self.consume_if(SpecialCharacter(CloseBracket)).is_none() {
       return ExpressionNode {
         value: SyntaxError("Expected ')' to close function argument list".to_string()).into(),
         start,
