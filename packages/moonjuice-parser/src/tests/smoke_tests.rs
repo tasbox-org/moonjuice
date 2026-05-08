@@ -11,4 +11,6 @@ mod tests {
       5 |> double |> print
     "}
   );
+
+  snapshot!(should_parse_issue_9, "(do 5 end) |> print");
 }
