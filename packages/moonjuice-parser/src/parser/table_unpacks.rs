@@ -99,7 +99,7 @@ impl Parser {
           TableUnpackElement::Valid { key, variable }
         }
       }
-      Some(Symbol(_) | SpecialCharacter(OpenCurlyBracket)) => {
+      _ => {
         let variable = self.parse_lvalue();
         let key = ExpressionNode {
           value: Expression::Int(next_numeric_index.get()).into(),
@@ -111,9 +111,6 @@ impl Parser {
 
         TableUnpackElement::Valid { key, variable }
       }
-      _ => TableUnpackElement::SyntaxError(
-        "Expected variable name, table unpack, '.<key>' or '[<key>]' in unpack".to_string(),
-      ),
     }
   }
 }

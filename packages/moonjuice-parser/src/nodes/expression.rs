@@ -3,9 +3,9 @@ use crate::nodes::lvalue::LValueNode;
 use crate::nodes::statement::StatementNode;
 use moonjuice_common::{Operator, Position};
 
-pub struct TableDefinitionElement {
-  pub key: ExpressionNode,
-  pub value: ExpressionNode,
+pub enum TableDefinitionElement {
+  Valid { key: ExpressionNode, value: ExpressionNode },
+  SyntaxError(String),
 }
 
 pub struct IfBranch {
