@@ -16,4 +16,9 @@ mod tests {
   snapshot!(should_not_simplify_optional_index, "a?.b.c");
 
   snapshot!(should_wrap_assignment, "def x = y = z");
+
+  snapshot!(
+    should_emit_table_unpacks_from_function_args,
+    "def x = fn({ a, .b }) a + b end"
+  );
 }
