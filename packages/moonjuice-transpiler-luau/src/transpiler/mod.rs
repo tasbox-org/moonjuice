@@ -1,4 +1,5 @@
 mod blocks;
+mod exports;
 mod expressions;
 mod lvalues;
 mod primitives;

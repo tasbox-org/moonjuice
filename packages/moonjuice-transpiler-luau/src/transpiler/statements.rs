@@ -1,3 +1,4 @@
+use crate::transpiler::exports::gather_exports;
 use crate::{Error, LuauTranspiler};
 use moonjuice_parser::nodes::expression::ExpressionNode;
 use moonjuice_parser::nodes::lvalue::LValueNode;
@@ -57,6 +58,37 @@ impl LuauTranspiler {
     lhs: Vec<LValueNode>,
     rhs: Vec<ExpressionNode>,
   ) -> Result<(), Error> {
+    if is_constant {
+      self.source.push_str("const ");
+    } else {
+      self.source.push_str("local ");
+    }
+
+    let exports = if is_export {
+      lhs.iter().flat_map(gather_exports).collect()
+    } else {
+      vec![]
+    };
+
+    self.push_lvalue_scope();
+    self.emit_comma_separated(lhs, Self::emit_lvalue)?;
+    let table_unpacks: Vec<StatementNode> = std::mem::take(self.get_scope_mut().table_unpacks.as_mut());
+    self.pop_scope();
+
+    self.source.push_str(" = ");
+
+    self.push_expression_scope();
+    self.emit_comma_separated(rhs, Self::emit_expression)?;
+    self.pop_scope();
+
+    if !table_unpacks.is_empty() {
+      self.source.push_str(";\n");
+      self.emit_table_unpacks(table_unpacks)?;
+    }
+
+    self.emit_exports(exports);
+
+    Ok(())
   }
 
   fn emit_return(&mut self, expr: ExpressionNode) -> Result<(), Error> {}
