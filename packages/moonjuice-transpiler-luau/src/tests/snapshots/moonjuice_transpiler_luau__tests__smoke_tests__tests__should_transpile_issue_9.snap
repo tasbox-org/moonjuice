@@ -5,7 +5,6 @@ expression: luau_source
 ---
 local exports_TEST_ID_1 = {}
 
-print((function() return 5
-end)())
+print(5)
 
 return exports_TEST_ID_1

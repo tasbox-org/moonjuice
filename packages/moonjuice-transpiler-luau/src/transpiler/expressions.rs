@@ -280,12 +280,12 @@ impl LuauTranspiler {
       }
 
       if index < last_branch {
-        self.source.push_str("elseif (");
+        self.source.push_str("\nelseif (");
       }
     }
 
     if let Some(branch) = else_branch {
-      self.source.push_str("else\n");
+      self.source.push_str("\nelse\n");
 
       if is_in_expression {
         self.emit_block(branch)?;
@@ -293,10 +293,12 @@ impl LuauTranspiler {
         self.emit_body(branch, "return", "")?;
       }
     } else if is_in_expression {
-      self.source.push_str("else nil\n");
+      self.source.push_str("\nelse nil\n");
     }
 
-    self.source.push_str("end\n");
+    if !is_in_expression {
+      self.source.push_str("\nend\n");
+    }
 
     Ok(())
   }

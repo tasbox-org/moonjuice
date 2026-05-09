@@ -1,0 +1,14 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/expressions.rs
+description: if true then false end
+expression: luau_source
+---
+local exports_TEST_ID_1 = {}
+
+if (true) then
+
+
+end
+
+
+return exports_TEST_ID_1

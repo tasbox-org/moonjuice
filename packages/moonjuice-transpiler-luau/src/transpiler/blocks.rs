@@ -1,9 +1,31 @@
 use crate::{Error, LuauTranspiler};
+use moonjuice_parser::nodes::expression::ExpressionNode;
+use moonjuice_parser::nodes::statement::Statement::Expression;
 use moonjuice_parser::nodes::statement::StatementNode;
 
 impl LuauTranspiler {
   pub(super) fn emit_block(&mut self, body: Vec<StatementNode>) -> Result<(), Error> {
     let is_in_expression = self.get_scope().is_in_expression;
+
+    if is_in_expression
+      && body.len() == 1
+      && let Some(StatementNode { value, start, end }) = body.first()
+      && let Expression(_) = **value
+    {
+      let start = *start;
+      let end = *end;
+
+      match body.into_iter().next().map(|node| *node.value) {
+        Some(Expression(expr)) => {
+          return self.emit_expression(ExpressionNode {
+            value: expr.into(),
+            start,
+            end,
+          });
+        }
+        _ => unreachable!(),
+      }
+    }
 
     if is_in_expression {
       self.source.push_str("(function() ");

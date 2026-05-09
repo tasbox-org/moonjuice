@@ -1,0 +1,12 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/expressions.rs
+description: def x = do 5 10 end
+expression: luau_source
+---
+local exports_TEST_ID_1 = {}
+
+const x = (function() 
+return 10
+end)()
+
+return exports_TEST_ID_1
