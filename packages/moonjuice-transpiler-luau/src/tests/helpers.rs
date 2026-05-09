@@ -4,7 +4,7 @@ macro_rules! snapshot {
   ( $name:ident, $code:expr ) => {
     #[test]
     fn $name() {
-      let result = $crate::tokenise_parse_and_transpile($code.chars().collect());
+      let result = $crate::transpile_to_luau($code.to_string(), "test.mj".to_string());
       let formatted = yaml_serde::to_string(&result).unwrap();
 
       insta::with_settings!({ description => $code }, {

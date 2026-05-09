@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::fmt::{Display, Formatter, Write};
 mod tests;
 pub mod transpiler;
 
@@ -14,6 +14,37 @@ pub struct Error {
   pub message: String,
   pub start: Position,
   pub end: Position,
+}
+
+#[derive(Serialize)]
+pub struct EnrichedError {
+  pub error: Error,
+  pub path: String,
+  pub line_contents: String,
+}
+
+impl Display for EnrichedError {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    let line = self.error.start.line;
+    let column = self.error.start.column;
+    let end_column = self.error.end.column;
+    let padding = " ".repeat(line.to_string().len());
+
+    write!(
+      f,
+      "{}:{}:{}\n{} |\n{} | {}\n{} | {}{}\nSyntax Error: {}",
+      self.path,
+      line,
+      column,
+      padding,
+      line,
+      self.line_contents,
+      padding,
+      " ".repeat(column.checked_sub(1).unwrap_or(0)),
+      "^".repeat(end_column.checked_sub(column).unwrap_or(1)),
+      self.error.message
+    )
+  }
 }
 
 pub(crate) struct Scope {
@@ -45,9 +76,30 @@ impl LuauTranspiler {
   }
 }
 
-pub fn tokenise_parse_and_transpile(source: Vec<char>) -> Result<String, Error> {
-  let tokens = Lexer::tokenise(source);
+pub fn transpile_to_luau(source: String, path: String) -> Result<String, EnrichedError> {
+  let tokens = Lexer::tokenise(source.chars().collect());
   let ast = Parser::parse(tokens);
 
-  LuauTranspiler::transpile(ast)
+  LuauTranspiler::transpile(ast).map_err(|error| {
+    let lines: Vec<&str> = source.split("\n").collect();
+    let line = lines
+      .get(error.start.line.checked_sub(1).unwrap_or(0))
+      .map(|line| *line)
+      .unwrap_or("");
+
+    EnrichedError {
+      error,
+      path,
+      line_contents: line.to_string(),
+    }
+  })
+}
+
+#[cxx::bridge(namespace = "MoonJuice")]
+mod ffi {
+  extern "Rust" {
+    type Error;
+
+    fn transpile_to_luau(source: String, path: String) -> Result<String>;
+  }
 }
