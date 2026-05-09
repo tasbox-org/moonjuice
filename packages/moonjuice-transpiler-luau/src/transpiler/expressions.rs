@@ -1,10 +1,26 @@
 use crate::{Error, LuauTranspiler};
 use moonjuice_common::{Operator, Position};
 use moonjuice_parser::nodes::expression::Expression::Call;
-use moonjuice_parser::nodes::expression::{Expression, ExpressionNode, IfBranch, TableDefinitionElement};
+use moonjuice_parser::nodes::expression::{
+  Expression, ExpressionNode, IfBranch, StringSegment, TableDefinitionElement,
+};
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
 use std::fmt::Write;
+
+fn is_valid_lua_symbol(string: &String) -> bool {
+  if string.chars().next().is_none_or(|char| char.is_ascii_digit()) {
+    return false;
+  }
+
+  for char in string.chars() {
+    if !char.is_ascii_alphanumeric() && char != '_' {
+      return false;
+    }
+  }
+
+  true
+}
 
 impl LuauTranspiler {
   pub(super) fn emit_expression(&mut self, expression: ExpressionNode) -> Result<(), Error> {
@@ -31,7 +47,7 @@ impl LuauTranspiler {
         else_branch,
       } => self.emit_if(if_branches, else_branch)?,
       Expression::For { lhs, enumerable, body } => self.emit_for(lhs, enumerable, body)?,
-      Expression::Call {
+      Call {
         is_optional,
         lhs,
         arguments,
@@ -143,7 +159,9 @@ impl LuauTranspiler {
       Operator::Pipe => {
         return self.emit_pipe_operator(lhs, rhs, start, end);
       }
-      Operator::Index => ("(", ")[", "]"),
+      Operator::Index => {
+        return self.emit_index_operator(lhs, rhs);
+      }
       Operator::OptionalIndex => (
         "(function() local lhs = ",
         "; return if lhs == nil then nil else lhs[",
@@ -176,6 +194,52 @@ impl LuauTranspiler {
     self.source.push_str(middle);
     self.emit_expression(rhs)?;
     self.source.push_str(suffix);
+    self.pop_scope();
+
+    Ok(())
+  }
+
+  fn emit_index_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {
+    self.push_expression_scope();
+
+    match *lhs.value {
+      Expression::Symbol(symbol) => {
+        self.source.push_str(symbol.as_str());
+      }
+      Expression::BinaryOperator {
+        op: Operator::Index,
+        lhs,
+        rhs,
+        ..
+      } => {
+        self.emit_index_operator(lhs, rhs)?;
+      }
+      _ => {
+        self.source.push_str("(");
+        self.emit_expression(lhs)?;
+        self.source.push_str(")");
+      }
+    }
+
+    match &*rhs.value {
+      Expression::String { segments, .. } if segments.len() == 1 => match segments.first() {
+        Some(StringSegment::Valid(string)) if is_valid_lua_symbol(string) => {
+          self.source.push('.');
+          self.source.push_str(string);
+        }
+        _ => {
+          self.source.push_str("[");
+          self.emit_expression(rhs)?;
+          self.source.push_str("]");
+        }
+      },
+      _ => {
+        self.source.push_str("[");
+        self.emit_expression(rhs)?;
+        self.source.push_str("]");
+      }
+    }
+
     self.pop_scope();
 
     Ok(())
