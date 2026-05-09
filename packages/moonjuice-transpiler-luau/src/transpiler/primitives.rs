@@ -29,7 +29,7 @@ impl LuauTranspiler {
   }
 
   pub(super) fn emit_symbol(&mut self, value: &str) {
-    if self.get_scope().is_in_expression {
+    if self.get_scope().is_in_expression || self.get_scope().is_in_lvalue {
       self.source.push_str(value);
     }
   }
