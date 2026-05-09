@@ -215,7 +215,7 @@ impl LuauTranspiler {
     let piped_call = if let Call {
       is_optional,
       lhs: original_lhs,
-      arguments: mut arguments,
+      mut arguments,
     } = *rhs.value
     {
       arguments.splice(0..0, vec![lhs]);
