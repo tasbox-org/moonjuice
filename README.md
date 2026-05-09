@@ -1,6 +1,6 @@
 # MoonJuice
 
-> ![WARNING]
+> [!WARNING]
 > MoonJuice is not ready for usage outside TASBox,
 > and both the grammar and these crates may have breaking changes made at any time
 
