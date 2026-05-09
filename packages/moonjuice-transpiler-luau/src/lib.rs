@@ -79,10 +79,3 @@ pub fn transpile_to_luau(source: String, path: String) -> Result<String, moonjui
     }
   })
 }
-
-#[cxx::bridge(namespace = "MoonJuice")]
-mod ffi {
-  extern "Rust" {
-    fn transpile_to_luau(source: String, path: String) -> Result<String>;
-  }
-}
