@@ -1,0 +1,11 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/expressions.rs
+description: "def x = 'a\nb\nc'"
+expression: luau_source
+---
+local exports_TEST_ID_1 = {}
+
+const x = `a\nb\nc`;
+
+
+return exports_TEST_ID_1

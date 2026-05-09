@@ -23,4 +23,6 @@ mod tests {
   );
 
   snapshot!(should_sanitise_strings, "def x = '`\"\\'\\0\\{'");
+  snapshot!(should_collapse_multiline_strings, "def x = 'a\nb\nc'");
+  snapshot!(should_transpile_format_strings, "def x = 'a{b}c'");
 }
