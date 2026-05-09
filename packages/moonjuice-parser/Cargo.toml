@@ -2,6 +2,10 @@
 name = "moonjuice-parser"
 version = "0.1.0"
 edition = "2024"
+description = "Parse MoonJuice tokens into an AST"
+license = "MIT"
+repository = "https://github.com/tasbox-org/moonjuice"
+readme = "../../README.md"
 
 [dependencies]
 moonjuice-common = { path = "../moonjuice-common", version = "0.1.0" }

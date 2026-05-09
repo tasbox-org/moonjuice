@@ -2,6 +2,10 @@
 name = "moonjuice-common"
 version = "0.1.0"
 edition = "2024"
+description = "Shared types and helpers for MoonJuice"
+license = "MIT"
+repository = "https://github.com/tasbox-org/moonjuice"
+readme = "../../README.md"
 
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }
