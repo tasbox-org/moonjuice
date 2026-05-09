@@ -1,0 +1,16 @@
+#[cfg(test)]
+mod tests {
+  use crate::snapshot;
+  use indoc::indoc;
+
+  snapshot!(
+    should_transpile_double_example,
+    indoc! {"
+      def double = fn(value) value * 2 end
+
+      5 |> double |> print
+    "}
+  );
+
+  snapshot!(should_transpile_issue_9, "(do 5 end) |> print");
+}

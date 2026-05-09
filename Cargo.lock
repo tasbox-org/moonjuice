@@ -298,9 +298,12 @@ dependencies = [
 name = "moonjuice-transpiler-luau"
 version = "0.1.0"
 dependencies = [
+ "indoc",
+ "insta",
  "moonjuice-common",
  "moonjuice-lexer",
  "moonjuice-parser",
+ "serde",
  "uuid",
 ]
 
