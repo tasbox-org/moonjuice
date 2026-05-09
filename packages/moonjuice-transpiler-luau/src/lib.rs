@@ -111,8 +111,6 @@ pub fn transpile_to_luau(source: String, path: String) -> Result<String, Enriche
 #[cxx::bridge(namespace = "MoonJuice")]
 mod ffi {
   extern "Rust" {
-    type Error;
-
     fn transpile_to_luau(source: String, path: String) -> Result<String>;
   }
 }
