@@ -1,6 +1,6 @@
 [package]
 name = "moonjuice-lexer"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "Tokenise raw text into MoonJuice tokens"
 license = "MIT"
@@ -10,7 +10,7 @@ keywords = ["moonjuice", "tasbox"]
 categories = ["parsing"]
 
 [dependencies]
-moonjuice-common = { path = "../moonjuice-common", version = "0.1.1" }
+moonjuice-common = { path = "../moonjuice-common", version = "0.1.2" }
 phf = { version = "0.13.1", features = ["macros"] }
 
 [dev-dependencies]
