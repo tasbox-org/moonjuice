@@ -8,10 +8,8 @@ moonjuice-common = { path = "../moonjuice-common", version = "0.1.0" }
 moonjuice-lexer = { path = "../moonjuice-lexer", version = "0.1.0" }
 moonjuice-parser = { path = "../moonjuice-parser", version = "0.1.0" }
 uuid = { version = "1.23.1", features = ["v7"] }
-serde = { version = "1.0.228", features = ["derive"] }
 cxx = "1.0"
 
 [dev-dependencies]
 indoc = "2"
 insta = { version = "1.47.2" }
-yaml_serde = "0.10.4"
