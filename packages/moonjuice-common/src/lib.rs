@@ -1,5 +1,6 @@
 use serde::Serialize;
 
+pub mod error;
 pub mod peekable_stream;
 
 #[derive(Debug, Copy, Clone, PartialEq, Serialize)]

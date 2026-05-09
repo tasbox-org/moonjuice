@@ -1,4 +1,4 @@
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::Write;
 mod tests;
 pub mod transpiler;
 
@@ -14,36 +14,6 @@ pub struct Error {
   pub message: String,
   pub start: Position,
   pub end: Position,
-}
-
-pub struct EnrichedError {
-  pub error: Error,
-  pub path: String,
-  pub line_contents: String,
-}
-
-impl Display for EnrichedError {
-  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-    let line = self.error.start.line;
-    let column = self.error.start.column;
-    let end_column = self.error.end.column;
-    let padding = " ".repeat(line.to_string().len());
-
-    write!(
-      f,
-      "{}:{}:{}\n{} |\n{} | {}\n{} | {}{}\nSyntax Error: {}",
-      self.path,
-      line,
-      column,
-      padding,
-      line,
-      self.line_contents,
-      padding,
-      " ".repeat(column.checked_sub(1).unwrap_or(0)),
-      "^".repeat(end_column.checked_sub(column).unwrap_or(1)),
-      self.error.message
-    )
-  }
 }
 
 pub(crate) struct Scope {
@@ -89,7 +59,7 @@ impl LuauTranspiler {
   }
 }
 
-pub fn transpile_to_luau(source: String, path: String) -> Result<String, EnrichedError> {
+pub fn transpile_to_luau(source: String, path: String) -> Result<String, moonjuice_common::error::Error> {
   let tokens = Lexer::tokenise(source.chars().collect());
   let ast = Parser::parse(tokens);
 
@@ -100,8 +70,10 @@ pub fn transpile_to_luau(source: String, path: String) -> Result<String, Enriche
       .map(|line| *line)
       .unwrap_or("");
 
-    EnrichedError {
-      error,
+    moonjuice_common::error::Error {
+      message: error.message,
+      start: error.start,
+      end: error.end,
       path,
       line_contents: line.to_string(),
     }

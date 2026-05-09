@@ -5,10 +5,12 @@ macro_rules! snapshot {
     #[test]
     fn $name() {
       let result = $crate::transpile_to_luau($code.to_string(), "test.mj".to_string());
-      let formatted = yaml_serde::to_string(&result).unwrap();
 
       insta::with_settings!({ description => $code }, {
-        insta::assert_snapshot!(formatted);
+        match result {
+          Ok(luau_source) => insta::assert_snapshot!(luau_source),
+          Err(error) => insta::assert_snapshot!(error.to_string())
+        }
       });
     }
   };

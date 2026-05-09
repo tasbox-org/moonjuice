@@ -1,12 +1,11 @@
 ---
 source: packages/moonjuice-transpiler-luau/src/tests/smoke_tests.rs
 description: (do 5 end) |> print
-expression: formatted
+expression: luau_source
 ---
-!Ok |-
-  local exports_TEST_ID_1 = {}
+local exports_TEST_ID_1 = {}
 
-  print((function() return 5
-  end)())
+print((function() return 5
+end)())
 
-  return exports_TEST_ID_1
+return exports_TEST_ID_1
