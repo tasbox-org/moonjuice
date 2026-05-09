@@ -1,0 +1,10 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/statements.rs
+description: fun()
+expression: luau_source
+---
+local exports_TEST_ID_1 = {}
+
+fun()
+
+return exports_TEST_ID_1

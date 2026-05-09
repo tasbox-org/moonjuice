@@ -8,4 +8,6 @@ mod tests {
   snapshot!(should_collapse_single_expr_do_block, "def x = do 5 end");
   snapshot!(should_not_collapse_multi_expr_do_block, "def x = do 5 10 end");
   snapshot!(should_not_collapse_statement_do_block, "def x = do def y = 5 end");
+
+  snapshot!(should_call_function_directly_when_lhs_symbol, "def x = fun()");
 }
