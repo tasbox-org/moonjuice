@@ -1,0 +1,12 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/smoke_tests.rs
+description: (do 5 end) |> print
+expression: formatted
+---
+!Ok |-
+  local exports_019e0c8573017e9289a4727e1d4b529c = {}
+
+  print((function() return 5
+  end)())
+
+  return exports_019e0c8573017e9289a4727e1d4b529c
