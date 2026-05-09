@@ -51,7 +51,7 @@ impl LuauTranspiler {
     Ok(())
   }
 
-  fn emit_definition(
+  pub(super) fn emit_definition(
     &mut self,
     is_constant: bool,
     is_export: bool,
