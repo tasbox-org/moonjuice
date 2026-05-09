@@ -34,7 +34,7 @@ impl LuauTranspiler {
     let mut transpiler = LuauTranspiler::new();
 
     let exports_symbol = format!("exports_{}", Uuid::now_v7().simple());
-    write!(transpiler.source, "local {} = {{}}", exports_symbol).ok();
+    write!(transpiler.source, "local {} = {{}}\n\n", exports_symbol).ok();
 
     transpiler.push_root_scope(exports_symbol.clone());
     transpiler.emit_body(ast, "return", "")?;

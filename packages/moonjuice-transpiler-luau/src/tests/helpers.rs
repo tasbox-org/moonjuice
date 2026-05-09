@@ -4,7 +4,9 @@ macro_rules! snapshot {
   ( $name:ident, $code:expr ) => {
     #[test]
     fn $name() {
-      insta::assert_yaml_snapshot!($crate::tokenise_parse_and_transpile($code.chars().collect()))
+      let result = $crate::tokenise_parse_and_transpile($code.chars().collect());
+      let formatted = yaml_serde::to_string(&result).unwrap();
+      insta::assert_snapshot!(formatted);
     }
   };
 }

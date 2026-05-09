@@ -12,4 +12,5 @@ serde = { version = "1.0.228", features = ["derive"] }
 
 [dev-dependencies]
 indoc = "2"
-insta = { version = "1.46.1", features = ["yaml"] }
+insta = { version = "1.47.2" }
+yaml_serde = "0.10.4"
