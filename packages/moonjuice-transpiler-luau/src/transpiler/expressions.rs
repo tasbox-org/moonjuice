@@ -3,6 +3,8 @@ use moonjuice_common::{Operator, Position};
 use moonjuice_parser::nodes::expression::{Expression, ExpressionNode, IfBranch, TableDefinitionElement};
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
+use std::fmt::Write;
+use uuid::Uuid;
 
 impl LuauTranspiler {
   pub(super) fn emit_expression(&mut self, expression: ExpressionNode) -> Result<(), Error> {
@@ -255,8 +257,83 @@ impl LuauTranspiler {
     enumerable: ExpressionNode,
     body: Vec<StatementNode>,
   ) -> Result<(), Error> {
+    let ret_symbol = format!("ret_{}", Uuid::now_v7().simple());
+    let element_symbol = format!("element_{}", Uuid::now_v7().simple());
+    let is_in_expression = self.get_scope().is_in_expression;
+
+    if is_in_expression {
+      write!(self.source, "(function()\nlocal {} = {{}}", ret_symbol).ok();
+    }
+
+    self.source.push_str("for ");
+
+    self.push_lvalue_scope();
+    self.emit_comma_separated(lhs, Self::emit_lvalue)?;
+    let table_unpacks = std::mem::take(self.get_scope_mut().table_unpacks.as_mut());
+    self.pop_scope();
+
+    self.source.push_str(" in ");
+
+    self.push_expression_scope();
+    self.emit_expression(enumerable)?;
+    self.pop_scope();
+
+    self.source.push_str(" do \n");
+
+    self.emit_table_unpacks(table_unpacks)?;
+    // TODO: Jump to end of loop! Return won't actually return here
+    self.emit_body(body, format!("local {} = ", element_symbol).as_str(), "")?;
+
+    if is_in_expression {
+      write!(self.source, "\ntable.insert({}, {})\n", ret_symbol, element_symbol).ok();
+    }
+
+    self.source.push_str("end");
+
+    if is_in_expression {
+      write!(self.source, "\nreturn {}\nend)()", ret_symbol).ok();
+    }
+
+    Ok(())
   }
 
   fn emit_call(&mut self, is_optional: bool, lhs: ExpressionNode, arguments: Vec<ExpressionNode>) -> Result<(), Error> {
+    let is_direct_symbol_call = matches!(*lhs.value, Expression::Symbol(_));
+
+    // Luau throws for `(<expr>)(<...args>)` if not explicitly an expression
+    // while `<symbol>(<...args>)` works fine
+    if !is_direct_symbol_call && !self.get_scope().is_in_expression {
+      self.source.push_str("local _ = ");
+    }
+
+    self.push_expression_scope();
+
+    if is_optional {
+      self.source.push_str("(function() local lhs = ");
+    }
+
+    if is_direct_symbol_call {
+      self.emit_expression(lhs)?;
+    } else {
+      self.source.push('(');
+      self.emit_expression(lhs)?;
+      self.source.push(')');
+    }
+
+    if is_optional {
+      self.source.push_str("; return if lhs == nil then nil else lhs");
+    }
+
+    self.source.push('(');
+    self.emit_comma_separated(arguments, Self::emit_expression)?;
+    self.source.push(')');
+
+    if is_optional {
+      self.source.push_str(" end)()");
+    }
+
+    self.pop_scope();
+
+    Ok(())
   }
 }
