@@ -246,9 +246,10 @@ impl LuauTranspiler {
   }
 
   fn emit_assignment_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {
+    let is_in_expression = self.get_scope().is_in_expression;
     self.push_expression_scope();
 
-    if self.get_scope().is_in_expression {
+    if is_in_expression {
       let ret_symbol = format!("ret_{}", self.get_unique_id());
 
       write!(self.source, "(function()\nlocal {} = ", ret_symbol).ok();

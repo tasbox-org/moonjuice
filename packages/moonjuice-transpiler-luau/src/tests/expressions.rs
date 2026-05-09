@@ -14,4 +14,6 @@ mod tests {
   snapshot!(should_simplify_index_when_symbol_like, "a.b['c']");
   snapshot!(should_not_simplify_index_when_not_symbol_like, "a['0']");
   snapshot!(should_not_simplify_optional_index, "a?.b.c");
+
+  snapshot!(should_wrap_assignment, "def x = y = z");
 }
