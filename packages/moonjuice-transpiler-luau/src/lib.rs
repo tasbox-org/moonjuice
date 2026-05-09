@@ -6,17 +6,14 @@ use moonjuice_common::Position;
 use moonjuice_lexer::Lexer;
 use moonjuice_parser::Parser;
 use moonjuice_parser::nodes::statement::StatementNode;
-use serde::Serialize;
 use uuid::Uuid;
 
-#[derive(Serialize)]
 pub struct Error {
   pub message: String,
   pub start: Position,
   pub end: Position,
 }
 
-#[derive(Serialize)]
 pub struct EnrichedError {
   pub error: Error,
   pub path: String,
