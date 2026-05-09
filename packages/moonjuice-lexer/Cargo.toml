@@ -14,6 +14,6 @@ moonjuice-common = { path = "../moonjuice-common", version = "0.1.0" }
 phf = { version = "0.13.1", features = ["macros"] }
 
 [dev-dependencies]
-assertor = "*"
+assertor = "0.0.4"
 indoc = "2"
 rstest = "0.26.1"
