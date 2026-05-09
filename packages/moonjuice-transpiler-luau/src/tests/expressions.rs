@@ -21,4 +21,6 @@ mod tests {
     should_emit_table_unpacks_from_function_args,
     "def x = fn({ a, .b }) a + b end"
   );
+
+  snapshot!(should_sanitise_strings, "def x = '`\"\\'\\0\\{'");
 }
