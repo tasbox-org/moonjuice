@@ -91,7 +91,15 @@ impl LuauTranspiler {
     Ok(())
   }
 
-  fn emit_return(&mut self, expr: ExpressionNode) -> Result<(), Error> {}
+  fn emit_return(&mut self, expr: ExpressionNode) -> Result<(), Error> {
+    self.source.push_str("return ");
+
+    self.push_expression_scope();
+    self.emit_expression(expr)?;
+    self.pop_scope();
+
+    Ok(())
+  }
 
   fn emit_break(&mut self) {
     self.source.push_str("break");
