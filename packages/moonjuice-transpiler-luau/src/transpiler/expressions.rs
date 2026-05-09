@@ -182,7 +182,28 @@ impl LuauTranspiler {
     Ok(())
   }
 
-  fn emit_assignment_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {}
+  fn emit_assignment_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {
+    self.push_expression_scope();
+
+    if self.get_scope().is_in_expression {
+      let ret_symbol = format!("ret_{}", Uuid::now_v7().simple());
+
+      write!(self.source, "(function()\nlocal {} = ", ret_symbol).ok();
+      self.emit_expression(rhs)?;
+      self.source.push_str(";\n");
+
+      self.emit_expression(lhs)?;
+      write!(self.source, " = {};\nreturn {} end)()", ret_symbol, ret_symbol).ok();
+    } else {
+      self.emit_expression(lhs)?;
+      self.source.push_str(" = ");
+      self.emit_expression(rhs)?;
+    }
+
+    self.pop_scope();
+
+    Ok(())
+  }
 
   fn emit_pipe_operator(
     &mut self,
