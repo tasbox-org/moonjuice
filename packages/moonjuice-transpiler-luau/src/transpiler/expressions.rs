@@ -1,5 +1,6 @@
 use crate::{Error, LuauTranspiler};
 use moonjuice_common::{Operator, Position};
+use moonjuice_parser::nodes::expression::Expression::Call;
 use moonjuice_parser::nodes::expression::{Expression, ExpressionNode, IfBranch, TableDefinitionElement};
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
@@ -141,7 +142,7 @@ impl LuauTranspiler {
       Operator::LessThanOrEqual => ("(", ") <= (", ")"),
       Operator::GreaterThanOrEqual => ("(", ") >= (", ")"),
       Operator::Pipe => {
-        return self.emit_pipe_operator(lhs, rhs);
+        return self.emit_pipe_operator(lhs, rhs, start, end);
       }
       Operator::Index => ("(", ")[", "]"),
       Operator::OptionalIndex => (
@@ -183,7 +184,40 @@ impl LuauTranspiler {
 
   fn emit_assignment_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {}
 
-  fn emit_pipe_operator(&mut self, lhs: ExpressionNode, rhs: ExpressionNode) -> Result<(), Error> {}
+  fn emit_pipe_operator(
+    &mut self,
+    lhs: ExpressionNode,
+    rhs: ExpressionNode,
+    start: Position,
+    end: Position,
+  ) -> Result<(), Error> {
+    let piped_call = if let Call {
+      is_optional,
+      lhs: original_lhs,
+      arguments: mut arguments,
+    } = *rhs.value
+    {
+      arguments.splice(0..0, vec![lhs]);
+
+      Call {
+        is_optional,
+        lhs: original_lhs,
+        arguments,
+      }
+    } else {
+      Call {
+        is_optional: false,
+        lhs: rhs,
+        arguments: vec![lhs],
+      }
+    };
+
+    self.emit_expression(ExpressionNode {
+      value: piped_call.into(),
+      start,
+      end,
+    })
+  }
 
   fn emit_function(&mut self, parameters: Vec<LValueNode>, body: Vec<StatementNode>) -> Result<(), Error> {
     if !self.get_scope().is_in_expression {
