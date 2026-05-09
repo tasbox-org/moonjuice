@@ -33,7 +33,7 @@ impl Lexer {
     }
 
     self.token_start_index = self.source.get_index();
-    self.token_start_position = self.position.clone();
+    self.token_start_position = self.position;
 
     let tokens = self
       .tokenise_comment()
@@ -60,8 +60,8 @@ impl Lexer {
     Token {
       value,
       lexeme: self.read_lexeme(),
-      start: self.token_start_position.clone(),
-      end: self.position.clone(),
+      start: self.token_start_position,
+      end: self.position,
     }
   }
 

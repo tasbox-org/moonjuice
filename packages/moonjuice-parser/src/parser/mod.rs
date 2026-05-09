@@ -80,8 +80,8 @@ impl Parser {
     self
       .tokens
       .peek_next()
-      .map(|token| token.start.clone())
-      .or_else(|| self.tokens.peek_back(1).map(|token| token.end.clone()))
+      .map(|token| token.start)
+      .or_else(|| self.tokens.peek_back(1).map(|token| token.end))
       .unwrap_or(Position { line: 1, column: 1 })
   }
 
@@ -89,7 +89,7 @@ impl Parser {
     self
       .tokens
       .peek_back(1)
-      .map(|token| token.end.clone())
+      .map(|token| token.end)
       .unwrap_or(Position { line: 1, column: 1 })
   }
 

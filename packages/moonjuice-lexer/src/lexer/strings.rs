@@ -47,7 +47,7 @@ impl Lexer {
       }
 
       self.token_start_index = self.source.get_index();
-      self.token_start_position = self.position.clone();
+      self.token_start_position = self.position;
 
       if tokens
         .last()

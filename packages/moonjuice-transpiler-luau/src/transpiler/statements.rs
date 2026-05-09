@@ -13,8 +13,8 @@ impl LuauTranspiler {
     return_statement: &str,
     return_statement_post: &str,
   ) -> Result<(), Error> {
-    let start = statement.start.clone();
-    let end = statement.end.clone();
+    let start = statement.start;
+    let end = statement.end;
 
     match *statement.value {
       Definition {

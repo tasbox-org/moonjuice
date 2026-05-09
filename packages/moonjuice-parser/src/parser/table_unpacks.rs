@@ -65,7 +65,7 @@ impl Parser {
               arguments: vec![],
             }
             .into(),
-            start: start.clone(),
+            start,
             end: self.get_end(),
           };
 

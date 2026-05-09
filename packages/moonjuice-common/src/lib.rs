@@ -2,7 +2,7 @@ use serde::Serialize;
 
 pub mod peekable_stream;
 
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Copy, Clone, PartialEq, Serialize)]
 pub struct Position {
   pub line: usize,
   pub column: usize,

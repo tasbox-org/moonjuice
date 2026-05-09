@@ -76,10 +76,10 @@ pub struct ExpressionNode {
 
 impl Node for ExpressionNode {
   fn get_start(&self) -> Position {
-    self.start.clone()
+    self.start
   }
 
   fn get_end(&self) -> Position {
-    self.end.clone()
+    self.end
   }
 }

@@ -68,11 +68,7 @@ impl LuauTranspiler {
         t.source.push_str("] = ");
         t.emit_expression(value)
       }
-      TableDefinitionElement::SyntaxError(message) => Err(Error {
-        message,
-        start: start.clone(),
-        end: end.clone(),
-      }),
+      TableDefinitionElement::SyntaxError(message) => Err(Error { message, start, end }),
     })?;
 
     self.source.push_str(" }");

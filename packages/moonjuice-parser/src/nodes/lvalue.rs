@@ -25,10 +25,10 @@ pub struct LValueNode {
 
 impl Node for LValueNode {
   fn get_start(&self) -> Position {
-    self.start.clone()
+    self.start
   }
 
   fn get_end(&self) -> Position {
-    self.end.clone()
+    self.end
   }
 }
