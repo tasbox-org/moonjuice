@@ -4,11 +4,11 @@ description: "def double = fn(value) value * 2 end\n\n5 |> double |> print\n"
 expression: formatted
 ---
 !Ok |-
-  local exports_019e0c85730272f3959e3c3b3422e3e1 = {}
+  local exports_TEST_ID_1 = {}
 
   const double = function(value)
   return (value) * (2)
   end
   print(double(5))
 
-  return exports_019e0c85730272f3959e3c3b3422e3e1
+  return exports_TEST_ID_1

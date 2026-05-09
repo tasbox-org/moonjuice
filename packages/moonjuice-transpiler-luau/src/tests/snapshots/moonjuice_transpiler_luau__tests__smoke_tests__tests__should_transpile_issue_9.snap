@@ -4,9 +4,9 @@ description: (do 5 end) |> print
 expression: formatted
 ---
 !Ok |-
-  local exports_019e0c8573017e9289a4727e1d4b529c = {}
+  local exports_TEST_ID_1 = {}
 
   print((function() return 5
   end)())
 
-  return exports_019e0c8573017e9289a4727e1d4b529c
+  return exports_TEST_ID_1

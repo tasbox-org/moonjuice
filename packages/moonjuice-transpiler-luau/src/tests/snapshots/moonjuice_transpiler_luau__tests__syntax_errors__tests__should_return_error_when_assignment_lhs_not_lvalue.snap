@@ -1,0 +1,11 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/syntax_errors.rs
+description: def 5 = 6
+expression: formatted
+---
+!Err |-
+  test.mj:1:5
+    |
+  1 | def 5 = 6
+    |     ^
+  Syntax Error: Expected variable name or table unpack

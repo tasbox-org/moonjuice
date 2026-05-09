@@ -6,7 +6,6 @@ use moonjuice_parser::nodes::expression::ExpressionNode;
 use moonjuice_parser::nodes::lvalue::{LValue, LValueNode, TableUnpackElement};
 use moonjuice_parser::nodes::statement::Statement::Definition;
 use moonjuice_parser::nodes::statement::StatementNode;
-use uuid::Uuid;
 
 impl LuauTranspiler {
   pub(super) fn emit_lvalue(&mut self, lvalue: LValueNode) -> Result<(), Error> {
@@ -28,7 +27,7 @@ impl LuauTranspiler {
     start: Position,
     end: Position,
   ) -> Result<(), Error> {
-    let symbol = format!("tbl_{}", Uuid::now_v7().simple());
+    let symbol = format!("tbl_{}", self.get_unique_id());
     self.source.push_str(symbol.as_str());
 
     let mut definition_lhs = vec![];

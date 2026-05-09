@@ -6,6 +6,8 @@ use moonjuice_common::Position;
 use moonjuice_lexer::Lexer;
 use moonjuice_parser::Parser;
 use moonjuice_parser::nodes::statement::StatementNode;
+
+#[cfg(not(test))]
 use uuid::Uuid;
 
 pub struct Error {
@@ -55,13 +57,16 @@ pub(crate) struct Scope {
 pub struct LuauTranspiler {
   scopes: Vec<Scope>,
   source: String,
+
+  #[cfg(test)]
+  next_unique_id: u64,
 }
 
 impl LuauTranspiler {
   pub fn transpile(ast: Vec<StatementNode>) -> Result<String, Error> {
     let mut transpiler = LuauTranspiler::new();
 
-    let exports_symbol = format!("exports_{}", Uuid::now_v7().simple());
+    let exports_symbol = format!("exports_{}", transpiler.get_unique_id());
     write!(transpiler.source, "local {} = {{}}\n\n", exports_symbol).ok();
 
     transpiler.push_root_scope(exports_symbol.clone());
@@ -70,6 +75,17 @@ impl LuauTranspiler {
 
     write!(transpiler.source, "\nreturn {}", exports_symbol).ok();
     Ok(transpiler.source)
+  }
+
+  #[cfg(test)]
+  pub(crate) fn get_unique_id(&mut self) -> String {
+    self.next_unique_id += 1;
+    format!("TEST_ID_{}", self.next_unique_id)
+  }
+
+  #[cfg(not(test))]
+  pub(crate) fn get_unique_id(&self) -> String {
+    Uuid::now_v7().simple().to_string()
   }
 }
 

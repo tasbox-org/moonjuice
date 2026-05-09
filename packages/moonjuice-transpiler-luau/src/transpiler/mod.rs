@@ -14,6 +14,8 @@ impl LuauTranspiler {
     LuauTranspiler {
       scopes: vec![],
       source: String::new(),
+      #[cfg(test)]
+      next_unique_id: 0,
     }
   }
 

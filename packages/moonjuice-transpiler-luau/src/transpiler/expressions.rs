@@ -5,7 +5,6 @@ use moonjuice_parser::nodes::expression::{Expression, ExpressionNode, IfBranch, 
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
 use std::fmt::Write;
-use uuid::Uuid;
 
 impl LuauTranspiler {
   pub(super) fn emit_expression(&mut self, expression: ExpressionNode) -> Result<(), Error> {
@@ -186,7 +185,7 @@ impl LuauTranspiler {
     self.push_expression_scope();
 
     if self.get_scope().is_in_expression {
-      let ret_symbol = format!("ret_{}", Uuid::now_v7().simple());
+      let ret_symbol = format!("ret_{}", self.get_unique_id());
 
       write!(self.source, "(function()\nlocal {} = ", ret_symbol).ok();
       self.emit_expression(rhs)?;
@@ -308,8 +307,8 @@ impl LuauTranspiler {
     enumerable: ExpressionNode,
     body: Vec<StatementNode>,
   ) -> Result<(), Error> {
-    let ret_symbol = format!("ret_{}", Uuid::now_v7().simple());
-    let element_symbol = format!("element_{}", Uuid::now_v7().simple());
+    let ret_symbol = format!("ret_{}", self.get_unique_id());
+    let element_symbol = format!("element_{}", self.get_unique_id());
     let is_in_expression = self.get_scope().is_in_expression;
 
     if is_in_expression {
