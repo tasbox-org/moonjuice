@@ -7,7 +7,8 @@ local exports_TEST_ID_1 = {}
 
 const double = function(value)
 return (value) * (2)
-end
+end;
+
 print(double(5))
 
 return exports_TEST_ID_1

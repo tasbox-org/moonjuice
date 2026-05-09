@@ -1,0 +1,19 @@
+---
+source: packages/moonjuice-transpiler-luau/src/tests/smoke_tests.rs
+description: "export createWeapon = fn(\n  {\n    .visuals = {\n      .worldModel,\n      .worldModelOffset,\n      .viewModel,\n      .viewModelOffset\n    },\n    .weapon = {\n      .isAutomatic,\n      .shouldReloadAutomatically,\n      .secondsPerRound,\n      .roundsPerReload,\n      .initialNumReloads,\n      .reloadTimeSeconds\n    },\n    .callbacks = {\n      .onShoot\n    }\n  },\n  {\n    .player,\n    .parentEntity,\n    .excludedColliders,\n  }\n)\n  print('hello world!')\nend\n"
+expression: luau_source
+---
+local exports_TEST_ID_1 = {}
+
+const createWeapon = function(tbl_TEST_ID_2, tbl_TEST_ID_3)
+const tbl_TEST_ID_4, tbl_TEST_ID_5, tbl_TEST_ID_6 = tbl_TEST_ID_2.visuals, tbl_TEST_ID_2.weapon, tbl_TEST_ID_2.callbacks;
+const worldModel, worldModelOffset, viewModel, viewModelOffset = tbl_TEST_ID_4.worldModel, tbl_TEST_ID_4.worldModelOffset, tbl_TEST_ID_4.viewModel, tbl_TEST_ID_4.viewModelOffset;
+const isAutomatic, shouldReloadAutomatically, secondsPerRound, roundsPerReload, initialNumReloads, reloadTimeSeconds = tbl_TEST_ID_5.isAutomatic, tbl_TEST_ID_5.shouldReloadAutomatically, tbl_TEST_ID_5.secondsPerRound, tbl_TEST_ID_5.roundsPerReload, tbl_TEST_ID_5.initialNumReloads, tbl_TEST_ID_5.reloadTimeSeconds;
+const onShoot = tbl_TEST_ID_6.onShoot;
+const player, parentEntity, excludedColliders = tbl_TEST_ID_3.player, tbl_TEST_ID_3.parentEntity, tbl_TEST_ID_3.excludedColliders;
+return print(`hello world!`)
+end;
+
+exports_TEST_ID_1.createWeapon = createWeapon
+
+return exports_TEST_ID_1

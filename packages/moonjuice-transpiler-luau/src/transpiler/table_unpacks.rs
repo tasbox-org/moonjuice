@@ -11,7 +11,9 @@ impl LuauTranspiler {
           is_export,
           lhs,
           rhs,
-        } => self.emit_definition(is_constant, is_export, lhs, rhs)?,
+        } => {
+          self.emit_definition(is_constant, is_export, lhs, rhs)?;
+        }
         _ => {
           return Err(Error {
             message: "Unexpected AST node in table unpacks. Expected Definition (this should never happen!)"
@@ -21,8 +23,6 @@ impl LuauTranspiler {
           });
         }
       }
-
-      self.source.push_str(";\n");
     }
 
     Ok(())

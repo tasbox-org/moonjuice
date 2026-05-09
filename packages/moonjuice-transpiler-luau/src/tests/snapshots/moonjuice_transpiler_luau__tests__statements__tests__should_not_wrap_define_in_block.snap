@@ -6,7 +6,8 @@ expression: luau_source
 local exports_TEST_ID_1 = {}
 
 do
-const x = y
+const x = y;
+
 end
 
 

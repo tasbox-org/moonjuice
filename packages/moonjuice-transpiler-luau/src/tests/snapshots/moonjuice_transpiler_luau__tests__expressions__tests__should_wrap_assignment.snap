@@ -8,6 +8,7 @@ local exports_TEST_ID_1 = {}
 const x = (function()
 local ret_TEST_ID_2 = z;
 y = ret_TEST_ID_2;
-return ret_TEST_ID_2 end)()
+return ret_TEST_ID_2 end)();
+
 
 return exports_TEST_ID_1

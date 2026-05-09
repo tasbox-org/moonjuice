@@ -8,6 +8,7 @@ local exports_TEST_ID_1 = {}
 const x = if (true) then
 false
 else nil
+;
 
 
 return exports_TEST_ID_1

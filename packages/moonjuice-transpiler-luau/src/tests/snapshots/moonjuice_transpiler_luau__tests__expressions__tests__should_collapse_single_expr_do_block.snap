@@ -5,6 +5,7 @@ expression: luau_source
 ---
 local exports_TEST_ID_1 = {}
 
-const x = 5
+const x = 5;
+
 
 return exports_TEST_ID_1

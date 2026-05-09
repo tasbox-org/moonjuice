@@ -8,6 +8,7 @@ local exports_TEST_ID_1 = {}
 const x = function(tbl_TEST_ID_2)
 const a, b = tbl_TEST_ID_2[1], tbl_TEST_ID_2.b;
 return (a) + (b)
-end
+end;
+
 
 return exports_TEST_ID_1

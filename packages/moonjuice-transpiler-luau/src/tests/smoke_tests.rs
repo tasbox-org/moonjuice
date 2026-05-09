@@ -13,4 +13,38 @@ mod tests {
   );
 
   snapshot!(should_transpile_issue_9, "(do 5 end) |> print");
+
+  snapshot!(
+    should_transpile_complex_unpack,
+    indoc! {"
+    export createWeapon = fn(
+      {
+        .visuals = {
+          .worldModel,
+          .worldModelOffset,
+          .viewModel,
+          .viewModelOffset
+        },
+        .weapon = {
+          .isAutomatic,
+          .shouldReloadAutomatically,
+          .secondsPerRound,
+          .roundsPerReload,
+          .initialNumReloads,
+          .reloadTimeSeconds
+        },
+        .callbacks = {
+          .onShoot
+        }
+      },
+      {
+        .player,
+        .parentEntity,
+        .excludedColliders,
+      }
+    )
+      print('hello world!')
+    end
+    "}
+  );
 }

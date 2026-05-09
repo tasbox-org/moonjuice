@@ -81,8 +81,9 @@ impl LuauTranspiler {
     self.emit_comma_separated(rhs, Self::emit_expression)?;
     self.pop_scope();
 
+    self.source.push_str(";\n");
+
     if !table_unpacks.is_empty() {
-      self.source.push_str(";\n");
       self.emit_table_unpacks(table_unpacks)?;
     }
 
