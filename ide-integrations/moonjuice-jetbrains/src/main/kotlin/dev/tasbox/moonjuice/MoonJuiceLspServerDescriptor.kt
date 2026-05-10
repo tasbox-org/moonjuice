@@ -14,5 +14,5 @@ class MoonJuiceLspServerDescriptor(project: Project) : ProjectWideLspServerDescr
 
   // TODO: Make path configurable or bundle with plugin
   override fun createCommandLine(): GeneralCommandLine =
-    GeneralCommandLine("~/.cargo/bin/moonjuice-lsp")
+    GeneralCommandLine("~/Programming/GitHub/tasbox-org/moonjuice/target/debug/moonjuice-lsp")
 }
