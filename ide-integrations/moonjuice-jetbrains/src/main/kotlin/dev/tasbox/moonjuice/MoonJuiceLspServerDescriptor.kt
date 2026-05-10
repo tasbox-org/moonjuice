@@ -1,6 +1,8 @@
 package dev.tasbox.moonjuice
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.application.PluginPathManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
@@ -12,7 +14,17 @@ class MoonJuiceLspServerDescriptor(project: Project) : ProjectWideLspServerDescr
 
   override fun isSupportedFile(file: VirtualFile): Boolean = MoonJuiceLspServerDescriptor.isSupportedFile(file)
 
-  // TODO: Make path configurable or bundle with plugin
-  override fun createCommandLine(): GeneralCommandLine =
-    GeneralCommandLine("~/Programming/GitHub/tasbox-org/moonjuice/target/debug/moonjuice-lsp")
+  override fun createCommandLine(): GeneralCommandLine {
+    // TODO: Handle platform-specific binaries
+    val lsp = PluginPathManager.getPluginResource(javaClass, "lsp/moonjuice-lsp")
+    if (lsp == null || !lsp.exists()) {
+      throw ExecutionException("Missing language server executable for target platform")
+    }
+
+    return GeneralCommandLine().apply {
+      withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+      withWorkDirectory(project.basePath)
+      withExePath(lsp.path)
+    }
+  }
 }

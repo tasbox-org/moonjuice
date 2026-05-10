@@ -43,3 +43,4 @@ bin/
 .DS_Store
 
 .intellijPlatform
+src/main/resources/lsp/moonjuice-lsp
