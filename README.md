@@ -1,3 +1,14 @@
+<p align="center">
+  <img height="256" src="https://github.com/tasbox-org/moonjuice/blob/master/branding/logo.png?raw=true" />
+</p>
+<p align="center">
+  <img alt="Discord" src="https://img.shields.io/discord/1448019135304040599?style=for-the-badge&logo=discord&logoColor=white&label=discord&labelColor=%235865F2&color=%23E0E3FF">
+  &nbsp  
+  <img alt="GitHub License" src="https://img.shields.io/github/license/tasbox-org/moonjuice?style=for-the-badge">
+  &nbsp  
+  <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/tasbox-org/moonjuice/build-test-release.yaml?style=for-the-badge">
+</p>
+
 # MoonJuice
 
 > [!WARNING]
