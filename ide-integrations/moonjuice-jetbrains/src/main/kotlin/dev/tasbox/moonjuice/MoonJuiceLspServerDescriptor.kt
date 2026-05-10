@@ -12,7 +12,7 @@ class MoonJuiceLspServerDescriptor(project: Project) : ProjectWideLspServerDescr
 
   override fun isSupportedFile(file: VirtualFile): Boolean = MoonJuiceLspServerDescriptor.isSupportedFile(file)
 
-  override fun createCommandLine(): GeneralCommandLine {
-    return super.createCommandLine()
-  }
+  // TODO: Make path configurable
+  override fun createCommandLine(): GeneralCommandLine =
+    GeneralCommandLine("~/.cargo/bin/moonjuice-lsp")
 }
