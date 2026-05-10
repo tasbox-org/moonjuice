@@ -4,5 +4,5 @@ import com.intellij.openapi.util.IconLoader
 
 object MoonJuiceIcons {
   @JvmField
-  val Language = IconLoader.getIcon("/icons/language.svg", javaClass)
+  val Language = IconLoader.getIcon("/icons/language.png", javaClass)
 }
