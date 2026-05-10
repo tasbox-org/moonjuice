@@ -6,11 +6,7 @@ import com.intellij.openapi.util.NlsSafe
 import org.jetbrains.annotations.NonNls
 import javax.swing.Icon
 
-class MoonJuiceFileType : LanguageFileType(MoonJuiceLanguage.INSTANCE) {
-  companion object {
-    val INSTANCE = MoonJuiceFileType()
-  }
-
+object MoonJuiceFileType : LanguageFileType(MoonJuiceLanguage) {
   override fun getName(): @NonNls String = "MoonJuice"
 
   override fun getDescription(): @NlsContexts.Label String = "MoonJuice script"

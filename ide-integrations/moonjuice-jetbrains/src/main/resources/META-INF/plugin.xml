@@ -29,5 +29,7 @@
       fieldName="INSTANCE"
       language="MoonJuice"
       extensions="mj"/>
+
+    <platform.lsp.serverSupportProvider implementation="dev.tasbox.moonjuice.MoonJuiceLspServerSupportProvider"/>
   </extensions>
 </idea-plugin>
