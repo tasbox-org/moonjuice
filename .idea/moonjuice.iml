@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/packages/moonjuice-lexer/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/packages/moonjuice-parser/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/packages/moonjuice-transpiler-luau/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/packages/moonjuice-lsp/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
