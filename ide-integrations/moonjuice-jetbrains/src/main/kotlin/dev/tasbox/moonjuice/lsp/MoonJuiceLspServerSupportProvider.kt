@@ -1,4 +1,4 @@
-package dev.tasbox.moonjuice
+package dev.tasbox.moonjuice.lsp
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile

@@ -1,8 +1,9 @@
-package dev.tasbox.moonjuice
+package dev.tasbox.moonjuice.language
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.openapi.util.NlsSafe
+import dev.tasbox.moonjuice.MoonJuiceIcons
 import org.jetbrains.annotations.NonNls
 import javax.swing.Icon
 

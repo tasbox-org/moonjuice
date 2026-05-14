@@ -25,11 +25,11 @@
   <extensions defaultExtensionNs="com.intellij">
     <fileType
       name="MoonJuice"
-      implementationClass="dev.tasbox.moonjuice.MoonJuiceFileType"
+      implementationClass="dev.tasbox.moonjuice.language.MoonJuiceFileType"
       fieldName="INSTANCE"
       language="MoonJuice"
       extensions="mj"/>
 
-    <platform.lsp.serverSupportProvider implementation="dev.tasbox.moonjuice.MoonJuiceLspServerSupportProvider"/>
+    <platform.lsp.serverSupportProvider implementation="dev.tasbox.moonjuice.lsp.MoonJuiceLspServerSupportProvider"/>
   </extensions>
 </idea-plugin>
