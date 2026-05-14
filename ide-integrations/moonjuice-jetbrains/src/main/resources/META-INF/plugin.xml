@@ -33,5 +33,14 @@
       extensions="mj"/>
 
     <platform.lsp.serverSupportProvider implementation="dev.tasbox.moonjuice.lsp.MoonJuiceLspServerSupportProvider"/>
+
+    <applicationService serviceImplementation="dev.tasbox.moonjuice.settings.MoonJuiceSettings"/>
+    <!--suppress PluginXmlI18n -->
+    <applicationConfigurable
+      parentId="language"
+      instance="dev.tasbox.moonjuice.settings.MoonJuiceSettingsConfigurable"
+      id="dev.tasbox.moonjuice.settings.MoonJuiceSettingsConfigurable"
+      displayName="MoonJuice"
+    />
   </extensions>
 </idea-plugin>
