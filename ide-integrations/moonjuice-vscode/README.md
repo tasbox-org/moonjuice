@@ -8,7 +8,7 @@ Language support for the MoonJuice scripting language.
 
 Syntax highlighting and basic editing capabilities (bracket/quote auto-closing, auto-indenting):
 
-![demonstration of syntax highlighting and basic editing features](images/basic.gif)
+![demonstration of syntax highlighting and basic editing features](ide-integrations/moonjuice-vscode/images/basic.gif)
 
 ## Requirements
 

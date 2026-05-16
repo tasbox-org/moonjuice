@@ -1,6 +1,8 @@
 {
-  "name": "moonjuice",
-  "displayName": "moonjuice",
+  "name": "moonjuice-ls",
+  "displayName": "MoonJuice: Language Support",
+  "icon": "icon.png",
+  "publisher": "tasbox",
   "description": "Language support for the MoonJuice scripting language",
   "license": "MIT",
   "repository": {
@@ -27,7 +29,7 @@
       {
         "title": "MoonJuice",
         "properties": {
-          "moonjuice.lspPath": {
+          "moonjuice.lsp.path": {
             "type": "string",
             "default": "moonjuice-lsp",
             "title": "Language Server Path",
