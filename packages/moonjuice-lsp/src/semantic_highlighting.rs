@@ -54,7 +54,7 @@ pub fn convert_to_lsp_tokens<'a>(tokens: impl Iterator<Item = &'a Token>) -> Vec
 
   tokens
     .filter_map(|token| {
-      let delta_line = if token.start.line != previous_start.line {
+      let mut delta_line = if token.start.line != previous_start.line {
         let delta_line = token.start.line - previous_start.line;
 
         previous_start = Position {
@@ -68,19 +68,51 @@ pub fn convert_to_lsp_tokens<'a>(tokens: impl Iterator<Item = &'a Token>) -> Vec
       };
 
       if let Some(token_type) = get_token_type(&token) {
-        let semantic_token = SemanticToken {
-          delta_line,
-          delta_start: (token.start.column - previous_start.column) as u32,
-          length: token.lexeme.len() as u32,
-          token_type: token_type as u32,
-          token_modifiers_bitset: 0,
-        };
+        let token_type = token_type as u32;
+        let mut delta_start = (token.start.column - previous_start.column) as u32;
 
-        previous_start = token.start;
-        Some(semantic_token)
+        if token.start.line == token.end.line {
+          previous_start = token.start;
+
+          Some(vec![SemanticToken {
+            delta_line,
+            delta_start,
+            length: token.lexeme.len() as u32,
+            token_type,
+            token_modifiers_bitset: 0,
+          }])
+        } else {
+          let mut tokens = Vec::<SemanticToken>::new();
+          tokens.reserve(token.end.line - token.start.line + 1);
+
+          for line in token.lexeme.lines() {
+            tokens.push(SemanticToken {
+              delta_line,
+              delta_start,
+              length: line.len() as u32,
+              token_type,
+              token_modifiers_bitset: 0,
+            });
+
+            delta_line = 1;
+            delta_start = 0;
+            previous_start = Position {
+              line: previous_start.line + 1,
+              column: 1,
+            };
+          }
+
+          previous_start = Position {
+            line: token.end.line,
+            column: 1,
+          };
+
+          Some(tokens)
+        }
       } else {
         None
       }
     })
+    .flatten()
     .collect()
 }
