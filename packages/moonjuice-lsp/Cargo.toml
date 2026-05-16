@@ -4,5 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+moonjuice-common = { path = "../moonjuice-common", version = "0.1.2" }
+moonjuice-lexer = { path = "../moonjuice-lexer", version = "0.1.2" }
+moonjuice-parser = { path = "../moonjuice-parser", version = "0.1.2" }
 tower-lsp-server = "0.23.0"
 tokio = { version = "1", features = ["io-std", "rt", "rt-multi-thread", "macros"] }
