@@ -3,7 +3,11 @@
   "displayName": "moonjuice",
   "description": "Language support for the MoonJuice scripting language",
   "license": "MIT",
-  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tasbox-org/moonjuice.git"
+  },
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -63,12 +67,13 @@
     "@biomejs/biome": "2.4.15",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "@types/vscode": "^1.120.0",
+    "@types/vscode": "^1.100.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.27.3",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vsce": "^2.15.0"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"

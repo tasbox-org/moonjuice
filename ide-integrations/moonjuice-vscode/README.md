@@ -4,31 +4,28 @@ Language support for the MoonJuice scripting language.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative
-to this README file.
+> IMPORTANT: This extension is still work-in-progress, language support is fairly rudimentary
 
-For example if there is an image subfolder under your extension project workspace:
+Syntax highlighting and basic editing capabilities (bracket/quote auto-closing, auto-indenting):
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend
-> short, focused animations that are easy to follow.
+![demonstration of syntax highlighting and basic editing features](images/basic.gif)
 
 ## Requirements
 
 The MoonJuice language server:
 
 - `cargo install moonjuice-lsp` (ensure `~/.cargo/bin` is in `PATH`)
-- TODO: Instructions to install manually
+  - Preferred installation method for easy updates
+- WIP: Instructions for installing manually
 
 ## Extension Settings
 
 This extension contributes the following settings:
 
-* `moonjuice.lspPath`: Path to the MoonJuice language server (defaults to reading from `PATH`)
+* `moonjuice.lspPath`: Path to the MoonJuice language server (defaults to reading `moonjuice-lsp` from `PATH`)
 
 ## Release Notes
 
-### 1.0.0
+### 0.1.0
 
-Initial release of MoonJuice language support with LSP integration.
+Preview version of MoonJuice language support with basic LSP integration for semantic highlighting.

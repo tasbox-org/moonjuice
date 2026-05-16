@@ -2,4 +2,4 @@ def double = fn(value)
   value * 2
 end
 
-print("Value: {2} | Doubled: {2 |> double}")
+print("Value: 2 | Doubled: {2 |> double}")
