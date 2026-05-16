@@ -55,12 +55,14 @@ impl SemanticHighlightingProvider {
         .into_iter()
         .filter_map(|token| {
           let delta_line = if token.start.line != previous_start.line {
+            let delta_line = token.start.line - previous_start.line;
+
             previous_start = Position {
               line: token.start.line,
               column: 1,
             };
 
-            1
+            delta_line as u32
           } else {
             0
           };
