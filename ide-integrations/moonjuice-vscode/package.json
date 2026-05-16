@@ -1,6 +1,6 @@
 {
-  "name": "moonjuice-language",
-  "displayName": "MoonJuice",
+  "name": "moonjuice-ls",
+  "displayName": "MoonJuice: Language Support",
   "icon": "icon.png",
   "publisher": "tasbox",
   "description": "Language support for the MoonJuice scripting language",
