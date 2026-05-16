@@ -4,10 +4,10 @@ import { LanguageClient, TransportKind } from "vscode-languageclient/node";
 let client: LanguageClient | undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
-  const lspPath = vscode.workspace.getConfiguration("moonjuice").get("lspPath");
+  const lspPath = vscode.workspace.getConfiguration("moonjuice.lsp").get("path");
 
   if (typeof lspPath !== "string" || lspPath.length < 1) {
-    return vscode.window.showErrorMessage("The `#moonjuice.lspPath#` setting was not configured");
+    return vscode.window.showErrorMessage("The `#moonjuice.lsp.path#` setting was not configured");
   }
 
   client = new LanguageClient(
