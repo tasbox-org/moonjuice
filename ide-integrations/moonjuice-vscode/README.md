@@ -23,10 +23,6 @@ The MoonJuice language server:
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
 * `moonjuice.lspPath`: Path to the MoonJuice language server (defaults to reading from `PATH`)
