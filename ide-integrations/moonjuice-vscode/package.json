@@ -16,8 +16,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "moonjuice.helloWorld",
-        "title": "Hello World"
+        "command": "moonjuice.restartLsp",
+        "title": "MoonJuice: Restart Language Server"
       }
     ],
     "configuration": [

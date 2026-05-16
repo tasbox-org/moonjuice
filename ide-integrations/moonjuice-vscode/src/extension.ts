@@ -24,8 +24,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   await client.start();
 
-  const disposable = vscode.commands.registerCommand("moonjuice-vscode.helloWorld", () => {
-    return vscode.window.showInformationMessage(vscode.workspace.getConfiguration("moonjuice").get("lspPath") ?? "");
+  const disposable = vscode.commands.registerCommand("moonjuice.restartLsp", async () => {
+    await client?.restart();
+    await vscode.window.showInformationMessage("MoonJuice Language Server restarted");
   });
 
   context.subscriptions.push(disposable);
