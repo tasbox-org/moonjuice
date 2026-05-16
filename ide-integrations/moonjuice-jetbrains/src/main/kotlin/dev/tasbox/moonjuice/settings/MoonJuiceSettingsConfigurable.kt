@@ -12,7 +12,7 @@ internal class MoonJuiceSettingsConfigurable : BoundSearchableConfigurable(
   "MoonJuice"
 ) {
   private val settings
-    get() = MoonJuiceSettings.getInstance();
+    get() = MoonJuiceSettings.getInstance()
 
   override fun createPanel(): DialogPanel {
     return panel {
