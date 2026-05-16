@@ -39,7 +39,8 @@
         "aliases": ["MoonJuice"],
         "extensions": [
           ".mj"
-        ]
+        ],
+        "configuration": "./language-configuration.json"
       }
     ]
   },
