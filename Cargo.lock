@@ -404,6 +404,7 @@ dependencies = [
 name = "moonjuice-lsp"
 version = "0.1.0"
 dependencies = [
+ "dashmap",
  "moonjuice-common",
  "moonjuice-lexer",
  "moonjuice-parser",
