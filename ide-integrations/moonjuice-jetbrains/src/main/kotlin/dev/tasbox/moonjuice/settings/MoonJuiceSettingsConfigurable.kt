@@ -21,7 +21,7 @@ internal class MoonJuiceSettingsConfigurable : BoundSearchableConfigurable(
           fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
             .withTitle(MoonJuiceBundle.message("moonjuice.settings.lsp.path.dialog.title"))
             .withFileFilter { file -> file.nameWithoutExtension == "moonjuice-lsp" },
-        ).bindItem(settings::lspPath)
+        ).bindItem(settings::lspPath, { settings.lspPath = it ?: FROM_PATH_META_OPTION })
       }
     }
   }

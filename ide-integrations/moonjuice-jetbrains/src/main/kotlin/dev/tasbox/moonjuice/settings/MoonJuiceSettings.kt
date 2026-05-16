@@ -3,6 +3,8 @@ package dev.tasbox.moonjuice.settings
 import com.intellij.openapi.components.*
 import com.intellij.configurationStore.Property
 
+const val FROM_PATH_META_OPTION = "<From PATH>"
+
 @Service
 @State(name = "MoonJuiceSettings", storages = [Storage("moonjuice.xml")])
 internal class MoonJuiceSettings :
@@ -11,7 +13,7 @@ internal class MoonJuiceSettings :
     fun getInstance(): MoonJuiceSettings = service()
   }
 
-  var lspPath: String?
+  var lspPath: String
     get() = state.lspPath
     set(value) {
       updateState {
@@ -21,5 +23,5 @@ internal class MoonJuiceSettings :
 }
 
 internal data class MoonJuiceSettingsState(
-  @JvmField @Property val lspPath: String? = null,
+  @JvmField @Property val lspPath: String = FROM_PATH_META_OPTION,
 )

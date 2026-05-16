@@ -10,12 +10,12 @@ import com.intellij.ui.dsl.builder.Row
 fun Row.comboBoxWithBrowseButton(
   fileChooserDescriptor: FileChooserDescriptor,
 ): Cell<ComboBox<String>> {
-  val comboBox = ComboBox(arrayOf("<From PATH>")).apply {
+  val comboBox = ComboBox(arrayOf(FROM_PATH_META_OPTION)).apply {
     @Suppress("UnstableApiUsage") initBrowsableEditor({
       FileChooser.chooseFile(fileChooserDescriptor, null, null) {
         this.removeAllItems()
 
-        this.addItem("<From PATH>")
+        this.addItem(FROM_PATH_META_OPTION)
         this.addItem(it.path)
 
         this.selectedItem = it.path
