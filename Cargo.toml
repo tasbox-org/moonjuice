@@ -3,6 +3,7 @@ resolver = "3"
 members = [
   "packages/moonjuice-common",
   "packages/moonjuice-lexer",
+  "packages/moonjuice-lsp",
   "packages/moonjuice-parser",
   "packages/moonjuice-transpiler-luau"
 ]
