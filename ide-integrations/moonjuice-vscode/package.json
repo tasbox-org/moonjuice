@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:moonjuice"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -29,6 +31,15 @@
             "markdownDescription": "Path to the Language Server executable. Defaults to reading from `PATH`."
           }
         }
+      }
+    ],
+    "languages": [
+      {
+        "id": "moonjuice",
+        "aliases": ["MoonJuice"],
+        "extensions": [
+          ".mj"
+        ]
       }
     ]
   },
@@ -57,5 +68,8 @@
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   }
 }
