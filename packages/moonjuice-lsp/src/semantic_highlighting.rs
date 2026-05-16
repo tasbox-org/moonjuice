@@ -54,16 +54,20 @@ impl SemanticHighlightingProvider {
       let tokens = Lexer::tokenise(contents.chars().collect())
         .into_iter()
         .filter_map(|token| {
-          if token.start.line != previous_start.line {
+          let delta_line = if token.start.line != previous_start.line {
             previous_start = Position {
               line: token.start.line,
               column: 1,
             };
-          }
+
+            1
+          } else {
+            0
+          };
 
           if let Some(token_type) = Self::get_token_type(&token) {
             let semantic_token = SemanticToken {
-              delta_line: (token.start.line - 1) as u32,
+              delta_line,
               delta_start: (token.start.column - previous_start.column) as u32,
               length: token.lexeme.len() as u32,
               token_type: token_type as u32,
