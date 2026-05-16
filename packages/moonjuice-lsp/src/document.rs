@@ -48,9 +48,9 @@ impl Document {
     };
 
     let tokens_in_range = self.tokens.iter().filter(|token| {
-      token.start.line >= start.line
-        && token.end.line <= end.line
-        && (token.start.line > start.line || token.start.column >= start.column)
+      token.end.line >= start.line
+        && token.start.line <= end.line
+        && (token.end.line > start.line || token.end.column >= start.column)
         && (token.start.line < end.line || token.start.column <= end.column)
     });
 
