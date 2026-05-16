@@ -1,6 +1,7 @@
 {
   "name": "moonjuice",
   "displayName": "moonjuice",
+  "publisher": "tasbox",
   "description": "Language support for the MoonJuice scripting language",
   "license": "MIT",
   "repository": {
