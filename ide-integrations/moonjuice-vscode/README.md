@@ -18,7 +18,7 @@ For example if there is an image subfolder under your extension project workspac
 
 The MoonJuice language server:
 
-- `cargo install moonjuice-lsp`
+- `cargo install moonjuice-lsp` (ensure `~/.cargo/bin` is in `PATH`)
 - TODO: Instructions to install manually
 
 ## Extension Settings
