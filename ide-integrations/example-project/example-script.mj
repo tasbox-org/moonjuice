@@ -1,1 +1,1 @@
-def x = `Value: {123}`
+def y = "foo {13}"
