@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows
-      - packages
+      - .github/workflows/*
+      - packages/**
   pull_request:
 
 env:
