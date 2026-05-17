@@ -4,6 +4,13 @@ import { LanguageClient, TransportKind } from "vscode-languageclient/node";
 let client: LanguageClient | undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
+  const disposable = vscode.commands.registerCommand("moonjuice.restartLsp", async () => {
+    await client?.restart();
+    await vscode.window.showInformationMessage("MoonJuice Language Server restarted");
+  });
+
+  context.subscriptions.push(disposable);
+
   const lspPath = vscode.workspace.getConfiguration("moonjuice.lsp").get("path");
 
   if (typeof lspPath !== "string" || lspPath.length < 1) {
@@ -23,13 +30,6 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   await client.start();
-
-  const disposable = vscode.commands.registerCommand("moonjuice.restartLsp", async () => {
-    await client?.restart();
-    await vscode.window.showInformationMessage("MoonJuice Language Server restarted");
-  });
-
-  context.subscriptions.push(disposable);
 }
 
 export async function deactivate() {
