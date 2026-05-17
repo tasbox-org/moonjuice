@@ -54,21 +54,21 @@ pub fn convert_to_lsp_tokens<'a>(tokens: impl Iterator<Item = &'a Token>) -> Vec
 
   tokens
     .filter_map(|token| {
-      let mut delta_line = if token.start.line != previous_start.line {
-        let delta_line = token.start.line - previous_start.line;
-
-        previous_start = Position {
-          line: token.start.line,
-          column: 1,
-        };
-
-        delta_line as u32
-      } else {
-        0
-      };
-
       if let Some(token_type) = get_token_type(&token) {
         let token_type = token_type as u32;
+
+        let mut delta_line = if token.start.line != previous_start.line {
+          let delta_line = token.start.line - previous_start.line;
+
+          previous_start = Position {
+            line: token.start.line,
+            column: 1,
+          };
+
+          delta_line as u32
+        } else {
+          0
+        };
         let mut delta_start = (token.start.column - previous_start.column) as u32;
 
         if token.start.line == token.end.line {
