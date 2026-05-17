@@ -26,6 +26,6 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 0.1.0
+### 0.1.x
 
 Preview version of MoonJuice language support with basic LSP integration for semantic highlighting.
