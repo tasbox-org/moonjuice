@@ -22,7 +22,7 @@ The MoonJuice language server:
 
 This extension contributes the following settings:
 
-* `moonjuice.lspPath`: Path to the MoonJuice language server (defaults to reading `moonjuice-lsp` from `PATH`)
+* `moonjuice.lsp.path`: Path to the MoonJuice language server (defaults to reading `moonjuice-lsp` from `PATH`)
 
 ## Release Notes
 
