@@ -1,5 +1,19 @@
-def double = fn(value)
-  value * 2
+def { .MAXIMUM_CAMERA_PITCH_RADIANS } = require("./constants.mj")
+
+-- TODO: Going to and from Euler angles isn't ideal as it introduces imprecision
+-- (and potentially non-deterministic imprecision depending on the system we're running on between server and clients)
+-- but I couldn't find a way to limit the domain of the quaternion to avoid flipping the camera upside down
+export updateSourceCamera = fn(controller, deltaTime, { .lookX, .lookY })
+  def angles = controller.orientation |> Quaternion.toEuler
+
+  def pitchRadians = math.clamp(
+    angles.x + lookY,
+    -MAXIMUM_CAMERA_PITCH_RADIANS,
+    MAXIMUM_CAMERA_PITCH_RADIANS
+  )
+  def yawRadians = (angles.y + lookX) % (math.pi * 2)
+
+  controller.orientation = vector.create(pitchRadians, yawRadians, 0) |> Quaternion.fromEuler
 end
 
-print("Value: 2 | Doubled: {2 |> double}")
+print("test")
