@@ -6,13 +6,13 @@ use crate::document::Document;
 use crate::semantic_highlighting::get_legend;
 use dashmap::DashMap;
 use tower_lsp_server::ls_types::{
-  DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams, DocumentDiagnosticParams,
-  DocumentDiagnosticReport, DocumentDiagnosticReportResult, DocumentFilter, FullDocumentDiagnosticReport,
-  InitializeParams, InitializeResult, InitializedParams, MessageType, RelatedFullDocumentDiagnosticReport,
-  SemanticTokensFullOptions, SemanticTokensOptions, SemanticTokensParams, SemanticTokensRangeParams,
-  SemanticTokensRangeResult, SemanticTokensRegistrationOptions, SemanticTokensResult, SemanticTokensServerCapabilities,
-  ServerCapabilities, TextDocumentRegistrationOptions, TextDocumentSyncCapability, TextDocumentSyncKind,
-  TextDocumentSyncOptions,
+  DiagnosticOptions, DiagnosticRegistrationOptions, DiagnosticServerCapabilities, DidChangeTextDocumentParams,
+  DidCloseTextDocumentParams, DidOpenTextDocumentParams, DocumentDiagnosticParams, DocumentDiagnosticReport,
+  DocumentDiagnosticReportResult, DocumentFilter, FullDocumentDiagnosticReport, InitializeParams, InitializeResult,
+  InitializedParams, MessageType, RelatedFullDocumentDiagnosticReport, SemanticTokensFullOptions,
+  SemanticTokensOptions, SemanticTokensParams, SemanticTokensRangeParams, SemanticTokensRangeResult,
+  SemanticTokensRegistrationOptions, SemanticTokensResult, SemanticTokensServerCapabilities, ServerCapabilities,
+  TextDocumentRegistrationOptions, TextDocumentSyncCapability, TextDocumentSyncKind, TextDocumentSyncOptions,
 };
 use tower_lsp_server::{Client, LanguageServer, LspService, Server};
 
@@ -23,6 +23,14 @@ struct Backend {
 
 impl LanguageServer for Backend {
   async fn initialize(&self, _params: InitializeParams) -> tower_lsp_server::jsonrpc::Result<InitializeResult> {
+    let text_document_registration_options = TextDocumentRegistrationOptions {
+      document_selector: Some(vec![DocumentFilter {
+        language: Some("moonjuice".to_string()),
+        scheme: Some("file".to_string()),
+        pattern: None,
+      }]),
+    };
+
     let result = InitializeResult {
       capabilities: ServerCapabilities {
         text_document_sync: Some(TextDocumentSyncCapability::Options(TextDocumentSyncOptions {
@@ -34,18 +42,25 @@ impl LanguageServer for Backend {
 
         semantic_tokens_provider: Some(SemanticTokensServerCapabilities::SemanticTokensRegistrationOptions(
           SemanticTokensRegistrationOptions {
-            text_document_registration_options: TextDocumentRegistrationOptions {
-              document_selector: Some(vec![DocumentFilter {
-                language: Some("moonjuice".to_string()),
-                scheme: Some("file".to_string()),
-                pattern: None,
-              }]),
-            },
+            text_document_registration_options: text_document_registration_options.clone(),
             semantic_tokens_options: SemanticTokensOptions {
               work_done_progress_options: Default::default(),
               legend: get_legend(),
               range: Some(true),
               full: Some(SemanticTokensFullOptions::Bool(true)),
+            },
+            static_registration_options: Default::default(),
+          },
+        )),
+
+        diagnostic_provider: Some(DiagnosticServerCapabilities::RegistrationOptions(
+          DiagnosticRegistrationOptions {
+            text_document_registration_options: text_document_registration_options.clone(),
+            diagnostic_options: DiagnosticOptions {
+              identifier: None,
+              inter_file_dependencies: false,
+              workspace_diagnostics: false,
+              work_done_progress_options: Default::default(),
             },
             static_registration_options: Default::default(),
           },
