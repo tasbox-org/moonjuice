@@ -1,3 +1,4 @@
+mod diagnostics;
 mod document;
 mod semantic_highlighting;
 
@@ -5,11 +6,13 @@ use crate::document::Document;
 use crate::semantic_highlighting::get_legend;
 use dashmap::DashMap;
 use tower_lsp_server::ls_types::{
-  DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams, DocumentFilter, InitializeParams,
-  InitializeResult, InitializedParams, MessageType, SemanticTokensFullOptions, SemanticTokensOptions,
-  SemanticTokensParams, SemanticTokensRangeParams, SemanticTokensRangeResult, SemanticTokensRegistrationOptions,
-  SemanticTokensResult, SemanticTokensServerCapabilities, ServerCapabilities, TextDocumentRegistrationOptions,
-  TextDocumentSyncCapability, TextDocumentSyncKind, TextDocumentSyncOptions,
+  DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams, DocumentDiagnosticParams,
+  DocumentDiagnosticReport, DocumentDiagnosticReportResult, DocumentFilter, FullDocumentDiagnosticReport,
+  InitializeParams, InitializeResult, InitializedParams, MessageType, RelatedFullDocumentDiagnosticReport,
+  SemanticTokensFullOptions, SemanticTokensOptions, SemanticTokensParams, SemanticTokensRangeParams,
+  SemanticTokensRangeResult, SemanticTokensRegistrationOptions, SemanticTokensResult, SemanticTokensServerCapabilities,
+  ServerCapabilities, TextDocumentRegistrationOptions, TextDocumentSyncCapability, TextDocumentSyncKind,
+  TextDocumentSyncOptions,
 };
 use tower_lsp_server::{Client, LanguageServer, LspService, Server};
 
@@ -99,6 +102,24 @@ impl LanguageServer for Backend {
         .get(params.text_document.uri.as_str())
         .map(|document| document.get_tokens_range(params.range)),
     )
+  }
+
+  async fn diagnostic(
+    &self,
+    params: DocumentDiagnosticParams,
+  ) -> tower_lsp_server::jsonrpc::Result<DocumentDiagnosticReportResult> {
+    Ok(DocumentDiagnosticReportResult::Report(DocumentDiagnosticReport::Full(
+      RelatedFullDocumentDiagnosticReport {
+        related_documents: None,
+        full_document_diagnostic_report: FullDocumentDiagnosticReport {
+          result_id: None,
+          items: self
+            .documents
+            .get(params.text_document.uri.as_str())
+            .map_or_else(|| vec![], |document| document.value().diagnostics.clone()),
+        },
+      },
+    )))
   }
 
   async fn shutdown(&self) -> tower_lsp_server::jsonrpc::Result<()> {

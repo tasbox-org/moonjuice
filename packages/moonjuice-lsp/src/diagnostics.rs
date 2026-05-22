@@ -47,7 +47,11 @@ impl DiagnosticsBuilder {
     }
   }
 
-  pub fn build(self) -> Vec<Diagnostic> {
+  pub fn build(mut self, ast: &Vec<StatementNode>) -> Vec<Diagnostic> {
+    for node in ast {
+      self.visit_statement_node(node);
+    }
+
     self.diagnostics
   }
 
