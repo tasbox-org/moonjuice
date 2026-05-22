@@ -1,4 +1,5 @@
 use crate::Parser;
+use crate::nodes::expression::Expression::SyntaxError;
 use crate::nodes::expression::ExpressionNode;
 use crate::operators::get_operator_metadata;
 use moonjuice_common::Operator::OptionalIndex;
@@ -20,7 +21,11 @@ fn is_binary_operator_with_greater_or_equal_precedence(token: Token, min_precede
 impl Parser {
   pub(super) fn parse_expression(&mut self) -> ExpressionNode {
     let lhs = self.parse_operand();
-    self.parse_sub_expression(lhs, 0)
+
+    match lhs.value.as_ref() {
+      SyntaxError(_) => lhs,
+      _ => self.parse_sub_expression(lhs, 0),
+    }
   }
 
   pub(super) fn parse_sub_expression(&mut self, mut lhs: ExpressionNode, min_precedence: u16) -> ExpressionNode {
