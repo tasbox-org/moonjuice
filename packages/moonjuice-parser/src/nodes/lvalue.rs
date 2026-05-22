@@ -9,26 +9,13 @@ pub enum TableUnpackElement {
   SyntaxError(String),
 }
 
+pub type TableUnpackElementNode = Node<TableUnpackElement>;
+
 #[derive(Serialize)]
 pub enum LValue {
   Symbol(String),
-  TableUnpack { elements: Vec<TableUnpackElement> },
+  TableUnpack { elements: Vec<TableUnpackElementNode> },
   SyntaxError(String),
 }
 
-#[derive(Serialize)]
-pub struct LValueNode {
-  pub value: Box<LValue>,
-  pub start: Position,
-  pub end: Position,
-}
-
-impl Node for LValueNode {
-  fn get_start(&self) -> Position {
-    self.start
-  }
-
-  fn get_end(&self) -> Position {
-    self.end
-  }
-}
+pub type LValueNode = Node<LValue>;

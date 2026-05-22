@@ -1,6 +1,8 @@
 use crate::Parser;
 use crate::nodes::expression::Expression::{SyntaxError, TableDefinition};
-use crate::nodes::expression::{Expression, ExpressionNode, StringSegment, TableDefinitionElement};
+use crate::nodes::expression::{
+  Expression, ExpressionNode, StringSegment, StringSegmentNode, TableDefinitionElement, TableDefinitionElementNode,
+};
 use moonjuice_common::Operator::{Assignment, Index};
 use moonjuice_common::SpecialCharacter::{CloseCurlyBracket, CloseSquareBracket, OpenCurlyBracket, OpenSquareBracket};
 use moonjuice_lexer::Token;
@@ -44,7 +46,7 @@ impl Parser {
     }
   }
 
-  fn parse_table_definition_element(&mut self, next_numeric_index: &Cell<i64>) -> TableDefinitionElement {
+  fn parse_table_definition_element(&mut self, next_numeric_index: &Cell<i64>) -> TableDefinitionElementNode {
     let start = self.get_start();
 
     match self.tokens.peek_next().map(|token| token.value.clone()) {
@@ -60,7 +62,11 @@ impl Parser {
         {
           let key = ExpressionNode {
             value: Expression::String {
-              segments: vec![StringSegment::Valid(symbol.clone())],
+              segments: vec![StringSegmentNode {
+                value: StringSegment::Valid(symbol.clone()).into(),
+                start,
+                end: self.get_end(),
+              }],
               arguments: vec![],
             }
             .into(),
@@ -78,9 +84,18 @@ impl Parser {
             }
           };
 
-          TableDefinitionElement::Valid { key, value }
+          TableDefinitionElementNode {
+            value: TableDefinitionElement::Valid { key, value }.into(),
+            start,
+            end: self.get_end(),
+          }
         } else {
-          TableDefinitionElement::SyntaxError("Expected key name after '.' in table definition".to_string())
+          TableDefinitionElementNode {
+            value: TableDefinitionElement::SyntaxError("Expected key name after '.' in table definition".to_string())
+              .into(),
+            start,
+            end: self.get_end(),
+          }
         }
       }
       Some(SpecialCharacter(OpenSquareBracket)) => {
@@ -89,13 +104,31 @@ impl Parser {
         let key = self.parse_expression();
 
         if self.consume_if(SpecialCharacter(CloseSquareBracket)).is_none() {
-          TableDefinitionElement::SyntaxError("Expected ']' to close table definition index expression".to_string())
+          TableDefinitionElementNode {
+            value: TableDefinitionElement::SyntaxError(
+              "Expected ']' to close table definition index expression".to_string(),
+            )
+            .into(),
+            start,
+            end: self.get_end(),
+          }
         } else if self.consume_if(Operator(Assignment)).is_none() {
-          TableDefinitionElement::SyntaxError("Expected '=' after table definition index expression".to_string())
+          TableDefinitionElementNode {
+            value: TableDefinitionElement::SyntaxError(
+              "Expected '=' after table definition index expression".to_string(),
+            )
+            .into(),
+            start,
+            end: self.get_end(),
+          }
         } else {
           let value = self.parse_expression();
 
-          TableDefinitionElement::Valid { key, value }
+          TableDefinitionElementNode {
+            value: TableDefinitionElement::Valid { key, value }.into(),
+            start,
+            end: self.get_end(),
+          }
         }
       }
       _ => {
@@ -108,7 +141,11 @@ impl Parser {
 
         next_numeric_index.set(next_numeric_index.get() + 1);
 
-        TableDefinitionElement::Valid { key, value }
+        TableDefinitionElementNode {
+          value: TableDefinitionElement::Valid { key, value }.into(),
+          start,
+          end: self.get_end(),
+        }
       }
     }
   }

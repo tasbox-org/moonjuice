@@ -1,7 +1,7 @@
 use crate::Parser;
 use crate::nodes::expression::Expression::SyntaxError;
 use crate::nodes::expression::StringSegment::{Malformed, Valid};
-use crate::nodes::expression::{Expression, ExpressionNode, StringSegment};
+use crate::nodes::expression::{Expression, ExpressionNode, StringSegmentNode};
 use moonjuice_lexer::StringTokenType::{End, Middle, Start, Whole};
 use moonjuice_lexer::TokenValue;
 
@@ -15,7 +15,11 @@ impl Parser {
 
         ExpressionNode {
           value: Expression::String {
-            segments: vec![Valid(value)],
+            segments: vec![StringSegmentNode {
+              value: Valid(value).into(),
+              start,
+              end: self.get_end(),
+            }],
             arguments: vec![],
           }
           .into(),
@@ -61,28 +65,44 @@ impl Parser {
   fn parse_format_string(&mut self) -> ExpressionNode {
     let start = self.get_start();
 
-    let mut segments: Vec<StringSegment> = vec![];
+    let mut segments: Vec<StringSegmentNode> = vec![];
     let mut arguments: Vec<ExpressionNode> = vec![];
 
     loop {
       match self.tokens.peek_next().map(|token| token.value.clone()) {
         Some(TokenValue::String(Start | Middle, value)) => {
           self.tokens.consume();
-          segments.push(Valid(value))
+          segments.push(StringSegmentNode {
+            value: Valid(value).into(),
+            start,
+            end: self.get_end(),
+          })
         }
         Some(TokenValue::String(End, value)) => {
           self.tokens.consume();
-          segments.push(Valid(value));
+          segments.push(StringSegmentNode {
+            value: Valid(value).into(),
+            start,
+            end: self.get_end(),
+          });
 
           break;
         }
         Some(TokenValue::MalformedString(Start | Middle, message)) => {
           self.tokens.consume();
-          segments.push(Malformed(message))
+          segments.push(StringSegmentNode {
+            value: Malformed(message).into(),
+            start,
+            end: self.get_end(),
+          })
         }
         Some(TokenValue::MalformedString(End, message)) => {
           self.tokens.consume();
-          segments.push(Malformed(message));
+          segments.push(StringSegmentNode {
+            value: Malformed(message).into(),
+            start,
+            end: self.get_end(),
+          });
 
           break;
         }

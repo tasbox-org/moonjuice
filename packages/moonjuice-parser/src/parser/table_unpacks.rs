@@ -1,7 +1,7 @@
 use crate::Parser;
-use crate::nodes::expression::{Expression, ExpressionNode, StringSegment};
+use crate::nodes::expression::{Expression, ExpressionNode, StringSegment, StringSegmentNode};
 use crate::nodes::lvalue::LValue::{SyntaxError, TableUnpack};
-use crate::nodes::lvalue::{LValue, LValueNode, TableUnpackElement};
+use crate::nodes::lvalue::{LValue, LValueNode, TableUnpackElement, TableUnpackElementNode};
 use moonjuice_common::Operator::{Assignment, Index};
 use moonjuice_common::SpecialCharacter::{CloseCurlyBracket, CloseSquareBracket, OpenCurlyBracket, OpenSquareBracket};
 use moonjuice_lexer::Token;
@@ -45,7 +45,7 @@ impl Parser {
     }
   }
 
-  fn parse_table_unpack_element(&mut self, next_numeric_index: &Cell<i64>) -> TableUnpackElement {
+  fn parse_table_unpack_element(&mut self, next_numeric_index: &Cell<i64>) -> TableUnpackElementNode {
     let start = self.get_start();
 
     match self.tokens.peek_next().map(|token| token.value.clone()) {
@@ -61,7 +61,11 @@ impl Parser {
         {
           let key = ExpressionNode {
             value: Expression::String {
-              segments: vec![StringSegment::Valid(symbol.clone())],
+              segments: vec![StringSegmentNode {
+                value: StringSegment::Valid(symbol.clone()).into(),
+                start,
+                end: self.get_end(),
+              }],
               arguments: vec![],
             }
             .into(),
@@ -79,9 +83,17 @@ impl Parser {
             }
           };
 
-          TableUnpackElement::Valid { key, variable }
+          TableUnpackElementNode {
+            value: TableUnpackElement::Valid { key, variable }.into(),
+            start,
+            end: self.get_end(),
+          }
         } else {
-          TableUnpackElement::SyntaxError("Expected key name after '.' in table unpack".to_string())
+          TableUnpackElementNode {
+            value: TableUnpackElement::SyntaxError("Expected key name after '.' in table unpack".to_string()).into(),
+            start,
+            end: self.get_end(),
+          }
         }
       }
       Some(SpecialCharacter(OpenSquareBracket)) => {
@@ -90,13 +102,27 @@ impl Parser {
         let key = self.parse_expression();
 
         if self.consume_if(SpecialCharacter(CloseSquareBracket)).is_none() {
-          TableUnpackElement::SyntaxError("Expected ']' to close table unpack index expression".to_string())
+          TableUnpackElementNode {
+            value: TableUnpackElement::SyntaxError("Expected ']' to close table unpack index expression".to_string())
+              .into(),
+            start,
+            end: self.get_end(),
+          }
         } else if self.consume_if(Operator(Assignment)).is_none() {
-          TableUnpackElement::SyntaxError("Expected '=' after table unpack index expression".to_string())
+          TableUnpackElementNode {
+            value: TableUnpackElement::SyntaxError("Expected '=' after table unpack index expression".to_string())
+              .into(),
+            start,
+            end: self.get_end(),
+          }
         } else {
           let variable = self.parse_lvalue();
 
-          TableUnpackElement::Valid { key, variable }
+          TableUnpackElementNode {
+            value: TableUnpackElement::Valid { key, variable }.into(),
+            start,
+            end: self.get_end(),
+          }
         }
       }
       _ => {
@@ -109,7 +135,11 @@ impl Parser {
 
         next_numeric_index.set(next_numeric_index.get() + 1);
 
-        TableUnpackElement::Valid { key, variable }
+        TableUnpackElementNode {
+          value: TableUnpackElement::Valid { key, variable }.into(),
+          start,
+          end: self.get_end(),
+        }
       }
     }
   }

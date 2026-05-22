@@ -1,7 +1,7 @@
 use crate::nodes::Node;
 use crate::nodes::lvalue::LValueNode;
 use crate::nodes::statement::StatementNode;
-use moonjuice_common::{Operator, Position};
+use moonjuice_common::Operator;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -9,6 +9,8 @@ pub enum TableDefinitionElement {
   Valid { key: ExpressionNode, value: ExpressionNode },
   SyntaxError(String),
 }
+
+pub type TableDefinitionElementNode = Node<TableDefinitionElement>;
 
 #[derive(Serialize)]
 pub struct IfBranch {
@@ -22,6 +24,8 @@ pub enum StringSegment {
   Malformed(String),
 }
 
+pub type StringSegmentNode = Node<StringSegment>;
+
 #[derive(Serialize)]
 pub enum Expression {
   Nil,
@@ -29,11 +33,11 @@ pub enum Expression {
   Int(i64),
   Double(f64),
   String {
-    segments: Vec<StringSegment>,
+    segments: Vec<StringSegmentNode>,
     arguments: Vec<ExpressionNode>,
   },
   TableDefinition {
-    elements: Vec<TableDefinitionElement>,
+    elements: Vec<TableDefinitionElementNode>,
   },
   Symbol(String),
   Block(Vec<StatementNode>),
@@ -67,19 +71,4 @@ pub enum Expression {
   SyntaxError(String),
 }
 
-#[derive(Serialize)]
-pub struct ExpressionNode {
-  pub value: Box<Expression>,
-  pub start: Position,
-  pub end: Position,
-}
-
-impl Node for ExpressionNode {
-  fn get_start(&self) -> Position {
-    self.start
-  }
-
-  fn get_end(&self) -> Position {
-    self.end
-  }
-}
+pub type ExpressionNode = Node<Expression>;
