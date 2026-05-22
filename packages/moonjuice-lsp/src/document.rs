@@ -35,6 +35,9 @@ impl Document {
     }
 
     self.tokens = Lexer::tokenise(change.text.chars().collect());
+
+    let ast = Parser::parse(self.tokens.clone());
+    self.diagnostics = DiagnosticsBuilder::new().build(&ast);
   }
 
   pub fn get_tokens_full(&self) -> SemanticTokensResult {
