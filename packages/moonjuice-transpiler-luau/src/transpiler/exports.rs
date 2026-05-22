@@ -12,7 +12,7 @@ pub(super) fn gather_exports(node: &LValueNode) -> Vec<String> {
       Symbol(symbol) => exports.push(symbol.clone()),
       TableUnpack { elements } => {
         for element in elements {
-          if let TableUnpackElement::Valid { variable, .. } = element {
+          if let TableUnpackElement::Valid { variable, .. } = element.value.as_ref() {
             to_process.push(variable);
           }
         }

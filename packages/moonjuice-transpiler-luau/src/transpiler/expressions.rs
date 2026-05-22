@@ -2,7 +2,7 @@ use crate::{Error, LuauTranspiler};
 use moonjuice_common::{Operator, Position};
 use moonjuice_parser::nodes::expression::Expression::Call;
 use moonjuice_parser::nodes::expression::{
-  Expression, ExpressionNode, IfBranch, StringSegment, TableDefinitionElement,
+  Expression, ExpressionNode, IfBranch, StringSegment, TableDefinitionElement, TableDefinitionElementNode,
 };
 use moonjuice_parser::nodes::lvalue::LValueNode;
 use moonjuice_parser::nodes::statement::StatementNode;
@@ -66,7 +66,7 @@ impl LuauTranspiler {
 
   fn emit_table_definition(
     &mut self,
-    elements: Vec<TableDefinitionElement>,
+    elements: Vec<TableDefinitionElementNode>,
     start: Position,
     end: Position,
   ) -> Result<(), Error> {
@@ -77,7 +77,7 @@ impl LuauTranspiler {
     self.push_expression_scope();
     self.source.push_str("{ ");
 
-    self.emit_comma_separated(elements, |t, element| match element {
+    self.emit_comma_separated(elements, |t, element| match *element.value {
       TableDefinitionElement::Valid { key, value } => {
         t.source.push('[');
         t.emit_expression(key)?;
@@ -222,17 +222,19 @@ impl LuauTranspiler {
     }
 
     match &*rhs.value {
-      Expression::String { segments, .. } if segments.len() == 1 => match segments.first() {
-        Some(StringSegment::Valid(string)) if is_valid_lua_symbol(string) => {
-          self.source.push('.');
-          self.source.push_str(string);
+      Expression::String { segments, .. } if segments.len() == 1 => {
+        match segments.first().map(|segment| segment.value.as_ref()) {
+          Some(StringSegment::Valid(string)) if is_valid_lua_symbol(string) => {
+            self.source.push('.');
+            self.source.push_str(string);
+          }
+          _ => {
+            self.source.push_str("[");
+            self.emit_expression(rhs)?;
+            self.source.push_str("]");
+          }
         }
-        _ => {
-          self.source.push_str("[");
-          self.emit_expression(rhs)?;
-          self.source.push_str("]");
-        }
-      },
+      }
       _ => {
         self.source.push_str("[");
         self.emit_expression(rhs)?;

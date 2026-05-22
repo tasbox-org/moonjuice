@@ -3,7 +3,7 @@ use moonjuice_common::Operator::Index;
 use moonjuice_common::Position;
 use moonjuice_parser::nodes::expression::Expression::{BinaryOperator, Symbol};
 use moonjuice_parser::nodes::expression::ExpressionNode;
-use moonjuice_parser::nodes::lvalue::{LValue, LValueNode, TableUnpackElement};
+use moonjuice_parser::nodes::lvalue::{LValue, LValueNode, TableUnpackElement, TableUnpackElementNode};
 use moonjuice_parser::nodes::statement::Statement::Definition;
 use moonjuice_parser::nodes::statement::StatementNode;
 
@@ -23,7 +23,7 @@ impl LuauTranspiler {
 
   fn emit_table_unpack(
     &mut self,
-    elements: Vec<TableUnpackElement>,
+    elements: Vec<TableUnpackElementNode>,
     start: Position,
     end: Position,
   ) -> Result<(), Error> {
@@ -34,7 +34,7 @@ impl LuauTranspiler {
     let mut definition_rhs = vec![];
 
     for element in elements {
-      match element {
+      match *element.value {
         TableUnpackElement::Valid { key, variable } => {
           let index = ExpressionNode {
             value: BinaryOperator {
