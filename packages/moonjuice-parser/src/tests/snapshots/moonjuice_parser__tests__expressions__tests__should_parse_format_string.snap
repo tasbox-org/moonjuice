@@ -6,8 +6,22 @@ expression: "$crate :: tokenise_and_parse(\"'{1}'\".chars().collect())"
     Expression:
       String:
         segments:
-          - Valid: ""
-          - Valid: ""
+          - value:
+              Valid: ""
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 2
+          - value:
+              Valid: ""
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 6
         arguments:
           - value:
               Int: 1

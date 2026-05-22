@@ -23,7 +23,14 @@ expression: "$crate :: tokenise_and_parse(\"a.b.c\".chars().collect())"
                 value:
                   String:
                     segments:
-                      - Valid: b
+                      - value:
+                          Valid: b
+                        start:
+                          line: 1
+                          column: 3
+                        end:
+                          line: 1
+                          column: 4
                     arguments: []
                 start:
                   line: 1
@@ -41,7 +48,14 @@ expression: "$crate :: tokenise_and_parse(\"a.b.c\".chars().collect())"
           value:
             String:
               segments:
-                - Valid: c
+                - value:
+                    Valid: c
+                  start:
+                    line: 1
+                    column: 5
+                  end:
+                    line: 1
+                    column: 6
               arguments: []
           start:
             line: 1

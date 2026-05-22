@@ -9,50 +9,78 @@ expression: "$crate :: tokenise_and_parse(\"fn({ .a, .b }) end\".chars().collect
           - value:
               TableUnpack:
                 elements:
-                  - Valid:
-                      key:
-                        value:
-                          String:
-                            segments:
-                              - Valid: a
-                            arguments: []
-                        start:
-                          line: 1
-                          column: 6
-                        end:
-                          line: 1
-                          column: 8
-                      variable:
-                        value:
-                          Symbol: a
-                        start:
-                          line: 1
-                          column: 6
-                        end:
-                          line: 1
-                          column: 8
-                  - Valid:
-                      key:
-                        value:
-                          String:
-                            segments:
-                              - Valid: b
-                            arguments: []
-                        start:
-                          line: 1
-                          column: 10
-                        end:
-                          line: 1
-                          column: 12
-                      variable:
-                        value:
-                          Symbol: b
-                        start:
-                          line: 1
-                          column: 10
-                        end:
-                          line: 1
-                          column: 12
+                  - value:
+                      Valid:
+                        key:
+                          value:
+                            String:
+                              segments:
+                                - value:
+                                    Valid: a
+                                  start:
+                                    line: 1
+                                    column: 6
+                                  end:
+                                    line: 1
+                                    column: 8
+                              arguments: []
+                          start:
+                            line: 1
+                            column: 6
+                          end:
+                            line: 1
+                            column: 8
+                        variable:
+                          value:
+                            Symbol: a
+                          start:
+                            line: 1
+                            column: 6
+                          end:
+                            line: 1
+                            column: 8
+                    start:
+                      line: 1
+                      column: 6
+                    end:
+                      line: 1
+                      column: 8
+                  - value:
+                      Valid:
+                        key:
+                          value:
+                            String:
+                              segments:
+                                - value:
+                                    Valid: b
+                                  start:
+                                    line: 1
+                                    column: 10
+                                  end:
+                                    line: 1
+                                    column: 12
+                              arguments: []
+                          start:
+                            line: 1
+                            column: 10
+                          end:
+                            line: 1
+                            column: 12
+                        variable:
+                          value:
+                            Symbol: b
+                          start:
+                            line: 1
+                            column: 10
+                          end:
+                            line: 1
+                            column: 12
+                    start:
+                      line: 1
+                      column: 10
+                    end:
+                      line: 1
+                      column: 12
             start:
               line: 1
               column: 4

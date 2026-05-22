@@ -6,10 +6,38 @@ expression: "$crate ::\ntokenise_and_parse(\"'first{1}second{2}third{3}last'\".c
     Expression:
       String:
         segments:
-          - Valid: first
-          - Valid: second
-          - Valid: third
-          - Valid: last
+          - value:
+              Valid: first
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 7
+          - value:
+              Valid: second
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 16
+          - value:
+              Valid: third
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 24
+          - value:
+              Valid: last
+            start:
+              line: 1
+              column: 1
+            end:
+              line: 1
+              column: 32
         arguments:
           - value:
               Int: 1
