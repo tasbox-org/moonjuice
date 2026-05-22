@@ -1,6 +1,5 @@
 use crate::nodes::Node;
 use crate::nodes::expression::ExpressionNode;
-use moonjuice_common::Position;
 use serde::Serialize;
 
 #[derive(Serialize)]
