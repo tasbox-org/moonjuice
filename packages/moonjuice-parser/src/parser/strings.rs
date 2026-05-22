@@ -121,7 +121,7 @@ impl Parser {
           arguments.push(ExpressionNode {
             value: SyntaxError("Format string holes must not be empty".to_string()).into(),
             start: self.get_end(),
-            end: self.get_end(),
+            end: self.tokens.peek_next().unwrap().start,
           })
         }
         None => {
