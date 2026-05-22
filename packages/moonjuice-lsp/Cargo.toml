@@ -1,6 +1,6 @@
 [package]
 name = "moonjuice-lsp"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2024"
 description = "Language server implementation for MoonJuice"
 license = "MIT"
@@ -12,6 +12,6 @@ keywords = ["moonjuice", "tasbox"]
 dashmap = "6.1.0"
 moonjuice-common = { path = "../moonjuice-common", version = "0.1.2" }
 moonjuice-lexer = { path = "../moonjuice-lexer", version = "0.1.2" }
-moonjuice-parser = { path = "../moonjuice-parser", version = "0.1.2" }
+moonjuice-parser = { path = "../moonjuice-parser", version = "0.2.0" }
 tower-lsp-server = "0.23.0"
 tokio = { version = "1", features = ["io-std", "rt", "rt-multi-thread", "macros"] }

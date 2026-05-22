@@ -1,6 +1,6 @@
 [package]
 name = "moonjuice-transpiler-luau"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2024"
 description = "Transpile MoonJuice AST nodes to the Luau scripting language"
 license = "MIT"
@@ -12,7 +12,7 @@ categories = ["compilers"]
 [dependencies]
 moonjuice-common = { path = "../moonjuice-common", version = "0.1.2" }
 moonjuice-lexer = { path = "../moonjuice-lexer", version = "0.1.2" }
-moonjuice-parser = { path = "../moonjuice-parser", version = "0.1.2" }
+moonjuice-parser = { path = "../moonjuice-parser", version = "0.2.0" }
 uuid = { version = "1.23.1", features = ["v7"] }
 
 [dev-dependencies]

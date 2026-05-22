@@ -1,18 +1,25 @@
+use crate::diagnostics::DiagnosticsBuilder;
 use crate::semantic_highlighting::convert_to_lsp_tokens;
 use moonjuice_common::Position;
 use moonjuice_lexer::{Lexer, Token};
+use moonjuice_parser::Parser;
 use tower_lsp_server::ls_types::{
-  Range, SemanticTokens, SemanticTokensRangeResult, SemanticTokensResult, TextDocumentContentChangeEvent,
+  Diagnostic, Range, SemanticTokens, SemanticTokensRangeResult, SemanticTokensResult, TextDocumentContentChangeEvent,
 };
 
 pub struct Document {
   tokens: Vec<Token>,
+  pub diagnostics: Vec<Diagnostic>,
 }
 
 impl Document {
   pub fn new(content: String) -> Self {
+    let tokens = Lexer::tokenise(content.chars().collect());
+    let ast = Parser::parse(tokens.clone());
+
     Document {
-      tokens: Lexer::tokenise(content.chars().collect()),
+      tokens,
+      diagnostics: DiagnosticsBuilder::new().build(&ast),
     }
   }
 
@@ -28,6 +35,9 @@ impl Document {
     }
 
     self.tokens = Lexer::tokenise(change.text.chars().collect());
+
+    let ast = Parser::parse(self.tokens.clone());
+    self.diagnostics = DiagnosticsBuilder::new().build(&ast);
   }
 
   pub fn get_tokens_full(&self) -> SemanticTokensResult {

@@ -1,6 +1,6 @@
 use crate::Parser;
 use crate::nodes::expression::Expression::{BinaryOperator, Symbol, SyntaxError};
-use crate::nodes::expression::{Expression, ExpressionNode, StringSegment};
+use crate::nodes::expression::{Expression, ExpressionNode, StringSegment, StringSegmentNode};
 use crate::operators::{OperatorMetadata, get_operator_metadata};
 use moonjuice_common::Operator::{Assignment, Index, OptionalIndex};
 use moonjuice_lexer::TokenValue::Operator;
@@ -72,7 +72,11 @@ impl Parser {
                 lhs,
                 rhs: ExpressionNode {
                   value: Expression::String {
-                    segments: vec![StringSegment::Valid(symbol)],
+                    segments: vec![StringSegmentNode {
+                      value: StringSegment::Valid(symbol).into(),
+                      start: rhs.start,
+                      end: rhs.end,
+                    }],
                     arguments: vec![],
                   }
                   .into(),

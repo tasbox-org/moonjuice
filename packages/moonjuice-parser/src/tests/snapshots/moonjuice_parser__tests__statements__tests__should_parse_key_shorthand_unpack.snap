@@ -10,28 +10,42 @@ expression: "$crate :: tokenise_and_parse(\"def { .b } = a\".chars().collect())"
         - value:
             TableUnpack:
               elements:
-                - Valid:
-                    key:
-                      value:
-                        String:
-                          segments:
-                            - Valid: b
-                          arguments: []
-                      start:
-                        line: 1
-                        column: 7
-                      end:
-                        line: 1
-                        column: 9
-                    variable:
-                      value:
-                        Symbol: b
-                      start:
-                        line: 1
-                        column: 7
-                      end:
-                        line: 1
-                        column: 9
+                - value:
+                    Valid:
+                      key:
+                        value:
+                          String:
+                            segments:
+                              - value:
+                                  Valid: b
+                                start:
+                                  line: 1
+                                  column: 7
+                                end:
+                                  line: 1
+                                  column: 9
+                            arguments: []
+                        start:
+                          line: 1
+                          column: 7
+                        end:
+                          line: 1
+                          column: 9
+                      variable:
+                        value:
+                          Symbol: b
+                        start:
+                          line: 1
+                          column: 7
+                        end:
+                          line: 1
+                          column: 9
+                  start:
+                    line: 1
+                    column: 7
+                  end:
+                    line: 1
+                    column: 9
           start:
             line: 1
             column: 5

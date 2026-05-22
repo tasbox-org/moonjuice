@@ -19,7 +19,14 @@ expression: "$crate :: tokenise_and_parse(\"a.b\".chars().collect())"
           value:
             String:
               segments:
-                - Valid: b
+                - value:
+                    Valid: b
+                  start:
+                    line: 1
+                    column: 3
+                  end:
+                    line: 1
+                    column: 4
               arguments: []
           start:
             line: 1

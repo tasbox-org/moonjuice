@@ -1,6 +1,6 @@
 use crate::{Error, LuauTranspiler};
 use moonjuice_common::Position;
-use moonjuice_parser::nodes::expression::{ExpressionNode, StringSegment};
+use moonjuice_parser::nodes::expression::{ExpressionNode, StringSegment, StringSegmentNode};
 use std::fmt::Write;
 
 impl LuauTranspiler {
@@ -36,7 +36,7 @@ impl LuauTranspiler {
 
   pub(super) fn emit_string(
     &mut self,
-    segments: Vec<StringSegment>,
+    segments: Vec<StringSegmentNode>,
     arguments: Vec<ExpressionNode>,
     start: Position,
     end: Position,
@@ -56,7 +56,7 @@ impl LuauTranspiler {
     self.source.push('`');
 
     for (index, segment) in segments.into_iter().enumerate() {
-      match segment {
+      match *segment.value {
         StringSegment::Valid(value) => {
           self.source.push_str(
             value

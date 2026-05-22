@@ -10,25 +10,32 @@ expression: "$crate :: tokenise_and_parse(\"def { [1] = b } = a\".chars().collec
         - value:
             TableUnpack:
               elements:
-                - Valid:
-                    key:
-                      value:
-                        Int: 1
-                      start:
-                        line: 1
-                        column: 8
-                      end:
-                        line: 1
-                        column: 9
-                    variable:
-                      value:
-                        Symbol: b
-                      start:
-                        line: 1
-                        column: 13
-                      end:
-                        line: 1
-                        column: 14
+                - value:
+                    Valid:
+                      key:
+                        value:
+                          Int: 1
+                        start:
+                          line: 1
+                          column: 8
+                        end:
+                          line: 1
+                          column: 9
+                      variable:
+                        value:
+                          Symbol: b
+                        start:
+                          line: 1
+                          column: 13
+                        end:
+                          line: 1
+                          column: 14
+                  start:
+                    line: 1
+                    column: 7
+                  end:
+                    line: 1
+                    column: 14
           start:
             line: 1
             column: 5

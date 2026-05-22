@@ -1,4 +1,4 @@
-use moonjuice_common::Position;
+use moonjuice_common::{Operator, Position};
 use moonjuice_lexer::{Token, TokenValue};
 use tower_lsp_server::ls_types::{SemanticToken, SemanticTokenModifier, SemanticTokenType, SemanticTokensLegend};
 
@@ -15,7 +15,7 @@ enum TokenType {
 }
 
 fn get_token_type(token: &Token) -> Option<TokenType> {
-  match token.value {
+  match &token.value {
     TokenValue::Nil => Some(TokenType::Keyword),
     TokenValue::Bool(_) => Some(TokenType::Keyword),
     TokenValue::Int(_) => Some(TokenType::Number),
@@ -23,7 +23,35 @@ fn get_token_type(token: &Token) -> Option<TokenType> {
     TokenValue::String(_, _) => Some(TokenType::String),
     TokenValue::Symbol(_) => Some(TokenType::Variable),
     TokenValue::Keyword(_) => Some(TokenType::Keyword),
-    TokenValue::Operator(_) => Some(TokenType::Operator),
+    TokenValue::Operator(op) => match op {
+      Operator::Add => Some(TokenType::Operator),
+      Operator::Subtract => Some(TokenType::Operator),
+      Operator::Multiply => Some(TokenType::Operator),
+      Operator::Divide => Some(TokenType::Operator),
+      Operator::Modulo => Some(TokenType::Operator),
+      Operator::Concat => Some(TokenType::Operator),
+      Operator::Length => Some(TokenType::Operator),
+      Operator::Not => Some(TokenType::Keyword),
+      Operator::And => Some(TokenType::Keyword),
+      Operator::Or => Some(TokenType::Keyword),
+      Operator::OptionalCoalesce => Some(TokenType::Operator),
+      Operator::Equals => Some(TokenType::Operator),
+      Operator::NotEquals => Some(TokenType::Operator),
+      Operator::LessThan => Some(TokenType::Operator),
+      Operator::GreaterThan => Some(TokenType::Operator),
+      Operator::LessThanOrEqual => Some(TokenType::Operator),
+      Operator::GreaterThanOrEqual => Some(TokenType::Operator),
+      Operator::Pipe => Some(TokenType::Operator),
+      Operator::Index => Some(TokenType::Operator),
+      Operator::OptionalIndex => Some(TokenType::Operator),
+      Operator::Assignment => Some(TokenType::Operator),
+      Operator::BitwiseNot => Some(TokenType::Operator),
+      Operator::BitwiseAnd => Some(TokenType::Operator),
+      Operator::BitwiseOr => Some(TokenType::Operator),
+      Operator::BitwiseXor => Some(TokenType::Operator),
+      Operator::LeftShift => Some(TokenType::Operator),
+      Operator::RightShift => Some(TokenType::Operator),
+    },
     TokenValue::SpecialCharacter(_) => None,
     TokenValue::Comment(_) => Some(TokenType::Comment),
     TokenValue::UnexpectedCharacter(_) => None,
